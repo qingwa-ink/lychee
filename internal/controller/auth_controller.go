@@ -69,11 +69,12 @@ func (ctrl *AuthController) Login(c *gin.Context) {
 		response.Fail(c, errors.ErrBadRequest)
 		return
 	}
-	access, refresh, err := ctrl.svc.Login(c.Request.Context(), req.Email, req.Password)
+	userID, access, refresh, err := ctrl.svc.Login(c.Request.Context(), req.Email, req.Password)
 	if err != nil {
 		response.Fail(c, err)
 		return
 	}
+	c.Set(CtxUserID, userID) // 供操作日志中间件记录登录用户
 	response.OK(c, gin.H{"access_token": access, "refresh_token": refresh})
 }
 

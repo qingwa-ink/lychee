@@ -98,15 +98,16 @@ func (s *AuthService) Register(ctx context.Context, email, plain, code string) e
 }
 
 // Login 校验账号密码并签发双 Token。
-func (s *AuthService) Login(ctx context.Context, email, plain string) (access, refresh string, err error) {
+func (s *AuthService) Login(ctx context.Context, email, plain string) (userID uint, access, refresh string, err error) {
 	user, err := s.userRepo.FindByEmail(email)
 	if err != nil {
-		return "", "", bizerr.New(bizerr.CodeUnauthorized, "邮箱或密码错误")
+		return 0, "", "", bizerr.New(bizerr.CodeUnauthorized, "邮箱或密码错误")
 	}
 	if !password.Compare(user.PasswordHash, plain) {
-		return "", "", bizerr.New(bizerr.CodeUnauthorized, "邮箱或密码错误")
+		return 0, "", "", bizerr.New(bizerr.CodeUnauthorized, "邮箱或密码错误")
 	}
-	return s.issueTokens(user.ID, user.TokenVersion)
+	access, refresh, err = s.issueTokens(user.ID, user.TokenVersion)
+	return user.ID, access, refresh, err
 }
 
 // Refresh 用 Refresh Token 换取新的双 Token（一次性轮换：作废旧 token、签发新 token）。

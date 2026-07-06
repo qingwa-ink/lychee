@@ -64,20 +64,27 @@ func main() {
 	checkInSvc := service.NewCheckInService(checkInRecordRepo, checkInGoalRepo)
 	checkInCtrl := controller.NewCheckInController(checkInSvc)
 
+	operationLogRepo := repository.NewOperationLogRepository(db)
+	logSvc := service.NewLogService(operationLogRepo)
+	logCtrl := controller.NewLogController(logSvc)
+
 	jwtMW := middleware.JWT(jwtMgr, userRepo)
 	jwtOptionalMW := middleware.JWTOptional(jwtMgr, userRepo)
 	i18nMW := middleware.I18N(i18nStore)
+	operationLogMW := middleware.OperationLog(operationLogRepo)
 
 	r := router.New(cfg, &router.Deps{
-		I18NMiddleware:        i18nMW,
-		JWTMiddleware:         jwtMW,
-		JWTOptionalMiddleware: jwtOptionalMW,
-		AuthController:        authCtrl,
-		LocaleController:      localeCtrl,
-		PhraseController:      phraseCtrl,
-		TaskGroupController:   taskGroupCtrl,
-		TaskController:        taskCtrl,
-		CheckInController:     checkInCtrl,
+		I18NMiddleware:         i18nMW,
+		JWTMiddleware:          jwtMW,
+		JWTOptionalMiddleware:  jwtOptionalMW,
+		AuthController:         authCtrl,
+		LocaleController:       localeCtrl,
+		PhraseController:       phraseCtrl,
+		TaskGroupController:    taskGroupCtrl,
+		TaskController:         taskCtrl,
+		CheckInController:      checkInCtrl,
+		LogController:          logCtrl,
+		OperationLogMiddleware: operationLogMW,
 	})
 
 	addr := fmt.Sprintf(":%d", cfg.App.Port)

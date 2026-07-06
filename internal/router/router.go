@@ -11,16 +11,17 @@ import (
 
 // Deps 路由所需依赖。各里程碑按需填充。
 type Deps struct {
-	I18NMiddleware        gin.HandlerFunc
-	JWTMiddleware         gin.HandlerFunc
-	JWTOptionalMiddleware gin.HandlerFunc
-	AuthController        *controller.AuthController
-	LocaleController      *controller.LocaleController
-	PhraseController      *controller.PhraseController
-	TaskGroupController   *controller.TaskGroupController
-	TaskController        *controller.TaskController
-	CheckInController     *controller.CheckInController
-	// 后续里程碑：LogController / ...
+	I18NMiddleware         gin.HandlerFunc
+	JWTMiddleware          gin.HandlerFunc
+	JWTOptionalMiddleware  gin.HandlerFunc
+	AuthController         *controller.AuthController
+	LocaleController       *controller.LocaleController
+	PhraseController       *controller.PhraseController
+	TaskGroupController    *controller.TaskGroupController
+	TaskController         *controller.TaskController
+	CheckInController      *controller.CheckInController
+	LogController          *controller.LogController
+	OperationLogMiddleware gin.HandlerFunc
 }
 
 // New 构造 Gin 引擎并注册路由。
@@ -37,9 +38,9 @@ func New(cfg *config.Config, deps *Deps) *gin.Engine {
 		response.OK(c, gin.H{"status": "ok"})
 	})
 
-	// API v1：统一挂载 i18n 中间件解析语种
+	// API v1：统一挂载 i18n 中间件解析语种，操作日志中间件自动落库
 	api := r.Group("/api/v1")
-	api.Use(deps.I18NMiddleware)
+	api.Use(deps.I18NMiddleware, deps.OperationLogMiddleware)
 
 	// --- 多语言（可选鉴权：匿名也能切换，登录则持久化） ---
 	locale := api.Group("/locale")
@@ -109,6 +110,15 @@ func New(cfg *config.Config, deps *Deps) *gin.Engine {
 		checkin.GET("/report", deps.CheckInController.Report)
 		checkin.GET("/goals", deps.CheckInController.ListGoals)
 		checkin.PUT("/goals", deps.CheckInController.UpsertGoal)
+	}
+
+	// 操作日志与报告
+	logs := api.Group("/logs")
+	logs.Use(deps.JWTMiddleware)
+	{
+		logs.GET("/operations", deps.LogController.Operations)
+		logs.GET("/operations/report", deps.LogController.OperationsReport)
+		logs.GET("/logins", deps.LogController.Logins)
 	}
 
 	return r
