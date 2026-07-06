@@ -1,0 +1,96 @@
+{* task_board.jet — 任务两栏骨架（Jet 渲染，i18n 从注入的 i18n map 取） *}
+<div class="ly-two-col">
+  <aside id="group-panel">
+    <div class="ly-panel-head">
+      <strong>{{ i18n["nav.tasks"] }}</strong>
+      <button type="button" id="add-root-group" class="small">+ {{ i18n["task.add_group"] }}</button>
+    </div>
+    <ul id="group-tree" class="group-tree"></ul>
+  </aside>
+
+  <section id="task-panel">
+    <div class="ly-panel-head">
+      <strong id="current-group-name">{{ i18n["task.all"] }}</strong>
+      <span id="group-actions" hidden>
+        <button type="button" id="add-sub-group" class="small">+ {{ i18n["task.add_subgroup"] }}</button>
+        <button type="button" id="rename-group" class="small">{{ i18n["common.edit"] }}</button>
+        <button type="button" id="del-group" class="small danger">{{ i18n["common.delete"] }}</button>
+      </span>
+    </div>
+
+    <div class="ly-filters">
+      <select id="f-status">
+        <option value="">{{ i18n["task.status"] }}</option>
+        <option value="editing">{{ i18n["task.status_editing"] }}</option>
+        <option value="pending">{{ i18n["task.status_pending"] }}</option>
+        <option value="completed">{{ i18n["task.status_completed"] }}</option>
+      </select>
+      <select id="f-priority">
+        <option value="">{{ i18n["task.priority"] }}</option>
+        <option value="0">P0</option>
+        <option value="1">P1</option>
+        <option value="2">P2</option>
+        <option value="3">P3</option>
+        <option value="4">P4</option>
+        <option value="5">P5</option>
+      </select>
+      <select id="f-sort">
+        <option value="created_at">{{ i18n["task.sort_created"] }}</option>
+        <option value="updated_at">{{ i18n["task.sort_updated"] }}</option>
+        <option value="due_date">{{ i18n["task.due_date"] }}</option>
+        <option value="priority">{{ i18n["task.priority"] }}</option>
+      </select>
+      <select id="f-order">
+        <option value="desc">{{ i18n["task.order_desc"] }}</option>
+        <option value="asc">{{ i18n["task.order_asc"] }}</option>
+      </select>
+      <button type="button" id="new-task-btn">{{ i18n["task.new_task"] }}</button>
+    </div>
+
+    <div id="task-list"></div>
+    <p id="task-empty" class="muted" hidden>{{ i18n["common.empty"] }}</p>
+    <div id="task-pager" class="phrase-pager"></div>
+    <div id="task-msg" class="auth-msg" role="alert" hidden></div>
+  </section>
+</div>
+
+<dialog id="task-edit-dlg">
+  <form method="dialog" id="task-edit-form">
+    <h5 id="task-edit-title">{{ i18n["task.new_task"] }}</h5>
+    <input type="hidden" id="task-id">
+    <label>{{ i18n["task.content"] }}</label>
+    <textarea id="task-content" rows="4" maxlength="5000" required></textarea>
+    <div class="ly-filters">
+      <select id="task-phrase-insert">
+        <option value="">{{ i18n["task.insert_phrase"] }}</option>
+      </select>
+      <button type="button" id="task-copy">{{ i18n["common.copy"] }}</button>
+    </div>
+    <div class="grid">
+      <label>{{ i18n["task.priority"] }}
+        <select id="task-priority">
+          <option value="0">P0</option>
+          <option value="1">P1</option>
+          <option value="2">P2</option>
+          <option value="3" selected>P3</option>
+          <option value="4">P4</option>
+          <option value="5">P5</option>
+        </select>
+      </label>
+      <label>{{ i18n["task.status"] }}
+        <select id="task-status">
+          <option value="editing">{{ i18n["task.status_editing"] }}</option>
+          <option value="pending">{{ i18n["task.status_pending"] }}</option>
+          <option value="completed">{{ i18n["task.status_completed"] }}</option>
+        </select>
+      </label>
+      <label>{{ i18n["task.due_date"] }}
+        <input type="date" id="task-due">
+      </label>
+    </div>
+    <div class="grid">
+      <button type="button" id="task-cancel">{{ i18n["common.cancel"] }}</button>
+      <button type="submit" id="task-save" value="save">{{ i18n["common.save"] }}</button>
+    </div>
+  </form>
+</dialog>

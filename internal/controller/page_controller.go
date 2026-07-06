@@ -17,6 +17,11 @@ func NewPageController(r *render.Renderer) *PageController {
 
 // render 统一渲染：locale 由 i18n 中间件写入上下文。content 为内容模板名（如 page_login）。
 func (ctrl *PageController) render(c *gin.Context, page, content, titleKey string, showNav bool, scripts []string) {
+	ctrl.renderData(c, page, content, titleKey, showNav, scripts, nil)
+}
+
+// renderData 同 render，但可携带自定义数据（如 Jet 片段 HTML，由内容模板 {{.Data}} 透传）。
+func (ctrl *PageController) renderData(c *gin.Context, page, content, titleKey string, showNav bool, scripts []string, data any) {
 	locale := c.GetString("locale")
 	c.Header("Content-Type", "text/html; charset=utf-8")
 	if err := ctrl.r.Render(c.Writer, locale, content, &render.PageData{
@@ -24,6 +29,7 @@ func (ctrl *PageController) render(c *gin.Context, page, content, titleKey strin
 		Title:   titleKey,
 		ShowNav: showNav,
 		Scripts: scripts,
+		Data:    data,
 	}); err != nil {
 		c.String(500, "render error: %v", err)
 	}
@@ -49,9 +55,19 @@ func (ctrl *PageController) appPage(page, titleKey string) gin.HandlerFunc {
 	}
 }
 
-func (ctrl *PageController) AppTasks(c *gin.Context)   { ctrl.appPage("tasks", "nav.tasks")(c) }
 func (ctrl *PageController) AppCheckIn(c *gin.Context) { ctrl.appPage("checkin", "nav.checkin")(c) }
 func (ctrl *PageController) AppLogs(c *gin.Context)    { ctrl.appPage("logs", "nav.logs")(c) }
+
+// /app/tasks — 任务看板（F1.3）：Jet 渲染两栏骨架，注入页面后由 tasks.js 接管交互。
+func (ctrl *PageController) AppTasks(c *gin.Context) {
+	locale := c.GetString("locale")
+	board, err := ctrl.r.Fragment("task_board.jet", locale, nil)
+	if err != nil {
+		c.String(500, "render board: %v", err)
+		return
+	}
+	ctrl.renderData(c, "tasks", "page_tasks", "nav.tasks", true, []string{"/static/js/pages/tasks.js"}, board)
+}
 
 // /app/phrases — 常用语管理（F1.2）
 func (ctrl *PageController) AppPhrases(c *gin.Context) {

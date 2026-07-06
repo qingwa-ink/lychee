@@ -185,6 +185,25 @@ var zhCatalog = map[string]string{
 	"common.prev":              "上一页",
 	"common.next":              "下一页",
 	"common.confirm_delete":    "确认删除？",
+
+	// 任务页（F1.3）
+	"task.add_group":           "新建分组",
+	"task.add_subgroup":        "新建子分组",
+	"task.all":                 "全部任务",
+	"task.sort":                "排序",
+	"task.sort_created":        "按创建时间",
+	"task.sort_updated":        "按修改时间",
+	"task.status_completed":    "已完成",
+	"task.order_asc":           "升序",
+	"task.order_desc":          "降序",
+	"task.new_task":            "新建任务",
+	"task.edit_task":           "编辑任务",
+	"task.content":             "内容",
+	"task.insert_phrase":       "插入常用语…",
+	"task.no_group":            "请先选择或新建分组",
+	"task.copy_done":           "已复制到剪贴板",
+	"task.confirm_delete_group": "删除分组将级联删除其下所有子分组与任务，确认？",
+	"task.confirm_delete_task": "确认删除该任务？",
 }
 
 var enCatalog = map[string]string{
@@ -260,4 +279,23 @@ var enCatalog = map[string]string{
 	"common.prev":              "Prev",
 	"common.next":              "Next",
 	"common.confirm_delete":    "Confirm delete?",
+
+	// Tasks page (F1.3)
+	"task.add_group":           "New Group",
+	"task.add_subgroup":        "New Subgroup",
+	"task.all":                 "All Tasks",
+	"task.sort":                "Sort",
+	"task.sort_created":        "By Created",
+	"task.sort_updated":        "By Updated",
+	"task.status_completed":    "Completed",
+	"task.order_asc":           "Asc",
+	"task.order_desc":          "Desc",
+	"task.new_task":            "New Task",
+	"task.edit_task":           "Edit Task",
+	"task.content":             "Content",
+	"task.insert_phrase":       "Insert phrase…",
+	"task.no_group":            "Select or create a group first",
+	"task.copy_done":           "Copied to clipboard",
+	"task.confirm_delete_group": "Deleting a group cascades to all subgroups and tasks. Confirm?",
+	"task.confirm_delete_task": "Delete this task?",
 }
