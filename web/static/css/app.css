@@ -1,0 +1,69 @@
+/* app.css — 少量定制样式（基于 Pico.css） */
+
+:root {
+  --ly-muted: #6c757d;
+  --ly-ok: #1a7f37;
+  --ly-err: #cf222e;
+  --ly-bar-bg: #e9ecef;
+}
+
+body { min-height: 100vh; }
+
+/* 认证卡片居中 */
+.auth-card {
+  max-width: 26rem;
+  margin: 4vh auto;
+  padding: 2rem;
+}
+.auth-card hgroup { text-align: center; margin-bottom: 1.5rem; }
+.auth-card hgroup p { color: var(--ly-muted); }
+.auth-links {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  justify-content: center;
+  padding-left: 0;
+  margin-top: 1rem;
+  font-size: .9rem;
+}
+.auth-links a { color: var(--pico-primary, #0070f3); }
+
+/* 消息提示 */
+.auth-msg { text-align: center; margin-top: 1rem; font-size: .9rem; }
+.auth-msg.ok { color: var(--ly-ok); }
+.auth-msg.error { color: var(--ly-err); }
+.auth-msg[hidden] { display: none; }
+
+/* 顶部导航 */
+.app-nav { padding: .5rem 1rem; }
+.app-nav a.active { font-weight: 700; text-decoration: underline; }
+.locale-switch { font-size: .9rem; }
+
+/* 通用辅助类 */
+.muted { color: var(--ly-muted); }
+.error { color: var(--ly-err); }
+
+/* 进度条（打卡完成度，F1.4 用） */
+.ly-progress {
+  background: var(--ly-bar-bg);
+  border-radius: .25rem;
+  height: .8rem;
+  overflow: hidden;
+}
+.ly-progress > span {
+  display: block;
+  height: 100%;
+  background: var(--pico-primary, #0070f3);
+}
+
+/* 两栏布局（任务看板，F1.3 用） */
+.ly-two-col {
+  display: grid;
+  grid-template-columns: 16rem 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .ly-two-col { grid-template-columns: 1fr; }
+}

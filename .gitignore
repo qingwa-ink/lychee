@@ -1,6 +1,9 @@
 # 编译产物
 /bin/
 
+# 本地运行专用配置（含个人 SMTP/密钥等，不提交）
+/config_test.yaml
+
 # SQLite 数据文件
 /data/
 *.db

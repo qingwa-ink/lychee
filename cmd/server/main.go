@@ -2,6 +2,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"time"
@@ -12,13 +13,18 @@ import (
 	"github.com/qingwa-ink/lychee/internal/pkg/i18n"
 	"github.com/qingwa-ink/lychee/internal/pkg/jwt"
 	"github.com/qingwa-ink/lychee/internal/pkg/mail"
+	"github.com/qingwa-ink/lychee/internal/render"
 	"github.com/qingwa-ink/lychee/internal/repository"
 	"github.com/qingwa-ink/lychee/internal/router"
 	"github.com/qingwa-ink/lychee/internal/service"
 )
 
 func main() {
-	cfg, err := config.Load("config.yaml")
+	// -config 指定配置文件路径，默认 config.yaml；本地开发可用 config_test.yaml
+	configPath := flag.String("config", "config.yaml", "配置文件路径")
+	flag.Parse()
+
+	cfg, err := config.Load(*configPath)
 	if err != nil {
 		log.Fatalf("load config: %v", err)
 	}
@@ -74,6 +80,13 @@ func main() {
 	operationLogMW := middleware.OperationLog(operationLogRepo)
 	rateLimitMW := middleware.RateLimit(cfg.RateLimit.PerSecond)
 
+	// 前端：双引擎渲染（html/template 骨架 + Jet 片段）+ 页面控制器
+	renderer, err := render.New("web/templates", "web/jet", i18nStore)
+	if err != nil {
+		log.Fatalf("init renderer: %v", err)
+	}
+	pageCtrl := controller.NewPageController(renderer)
+
 	r := router.New(cfg, &router.Deps{
 		I18NMiddleware:         i18nMW,
 		JWTMiddleware:          jwtMW,
@@ -87,6 +100,7 @@ func main() {
 		LogController:          logCtrl,
 		OperationLogMiddleware: operationLogMW,
 		RateLimitMiddleware:    rateLimitMW,
+		PageController:         pageCtrl,
 	})
 
 	addr := fmt.Sprintf(":%d", cfg.App.Port)

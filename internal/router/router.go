@@ -23,6 +23,7 @@ type Deps struct {
 	LogController          *controller.LogController
 	OperationLogMiddleware gin.HandlerFunc
 	RateLimitMiddleware    gin.HandlerFunc
+	PageController         *controller.PageController
 }
 
 // New 构造 Gin 引擎并注册路由。
@@ -120,6 +121,30 @@ func New(cfg *config.Config, deps *Deps) *gin.Engine {
 		logs.GET("/operations", deps.LogController.Operations)
 		logs.GET("/operations/report", deps.LogController.OperationsReport)
 		logs.GET("/logins", deps.LogController.Logins)
+	}
+
+	// --- 静态资源（自托管 Pico.css / Chart.js / 应用 JS/CSS） ---
+	r.Static("/static", "web/static")
+
+	// --- 页面（服务端渲染）：均挂 i18n 中间件解析语种 ---
+	pages := r.Group("")
+	pages.Use(deps.I18NMiddleware)
+
+	// 公开页（无导航）
+	pages.GET("/", func(c *gin.Context) { c.Redirect(302, "/login") })
+	pages.GET("/login", deps.PageController.Login)
+	pages.GET("/register", deps.PageController.Register)
+	pages.GET("/forgot-password", deps.PageController.ForgotPassword)
+
+	// 应用页（带导航，挂可选鉴权以支持登录态语种；真实保护在 API 层 + 客户端守卫）
+	app := pages.Group("/app")
+	app.Use(deps.JWTOptionalMiddleware)
+	{
+		app.GET("/tasks", deps.PageController.AppTasks)
+		app.GET("/phrases", deps.PageController.AppPhrases)
+		app.GET("/checkin", deps.PageController.AppCheckIn)
+		app.GET("/logs", deps.PageController.AppLogs)
+		app.GET("/settings", deps.PageController.AppSettings)
 	}
 
 	return r

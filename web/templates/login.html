@@ -1,0 +1,22 @@
+{{define "page_login"}}
+<article class="auth-card">
+  <hgroup>
+    <h2>{{index .I18n "auth.login_title"}}</h2>
+    <p>{{index .I18n "app.tagline"}}</p>
+  </hgroup>
+  <form id="auth-form" data-action="login">
+    <label for="email">{{index .I18n "auth.email"}}</label>
+    <input type="email" id="email" name="email" autocomplete="email" required>
+
+    <label for="password">{{index .I18n "auth.password"}}</label>
+    <input type="password" id="password" name="password" autocomplete="current-password" required>
+
+    <button type="submit" id="auth-submit">{{index .I18n "auth.login"}}</button>
+  </form>
+  <ul class="auth-links">
+    <li><a href="/forgot-password">{{index .I18n "auth.forgot_password"}}</a></li>
+    <li><a href="/register">{{index .I18n "auth.no_account"}}</a></li>
+  </ul>
+  <div id="auth-msg" class="auth-msg" role="alert" hidden></div>
+</article>
+{{end}}

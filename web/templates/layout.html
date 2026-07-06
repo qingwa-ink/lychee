@@ -1,0 +1,45 @@
+{{define "layout"}}
+<!doctype html>
+<html lang="{{.Locale}}" data-locale="{{.Locale}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{if .Title}}{{index .I18n .Title}}{{else}}{{index .I18n "app.name"}}{{end}} · {{index .I18n "app.name"}}</title>
+  <link rel="stylesheet" href="/static/vendor/pico.min.css">
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+  {{if .ShowNav}}{{template "nav" .}}{{end}}
+  <main class="container page-{{.Page}}">
+    {{.Content}}
+  </main>
+  <!-- locale cookie 为 HttpOnly，JS 读不到；这里把语种与文案注入供前端复用 -->
+  <script>window.__LOCALE__ = {{.LocaleJSON}}; window.__I18N__ = {{.I18NJSON}}; window.__PAGE__ = "{{.Page}}";</script>
+  <script src="/static/js/core.js" defer></script>
+  <script src="/static/js/auth.js" defer></script>
+  {{range .Scripts}}<script src="{{.}}" defer></script>{{end}}
+</body>
+</html>
+{{end}}
+
+{{define "nav"}}
+<nav class="container-fluid app-nav">
+  <ul>
+    <li><strong>{{index .I18n "app.name"}}</strong></li>
+  </ul>
+  <ul>
+    <li><a href="/app/tasks" class="{{if eq .Page "tasks"}}active{{end}}">{{index .I18n "nav.tasks"}}</a></li>
+    <li><a href="/app/phrases" class="{{if eq .Page "phrases"}}active{{end}}">{{index .I18n "nav.phrases"}}</a></li>
+    <li><a href="/app/checkin" class="{{if eq .Page "checkin"}}active{{end}}">{{index .I18n "nav.checkin"}}</a></li>
+    <li><a href="/app/logs" class="{{if eq .Page "logs"}}active{{end}}">{{index .I18n "nav.logs"}}</a></li>
+    <li><a href="/app/settings" class="{{if eq .Page "settings"}}active{{end}}">{{index .I18n "nav.settings"}}</a></li>
+  </ul>
+  <ul>
+    <li class="locale-switch">
+      <a href="#" onclick="return switchLocale('zh')">中</a> /
+      <a href="#" onclick="return switchLocale('en')">EN</a>
+    </li>
+    <li><a href="#" id="nav-logout" onclick="return logout()">{{index .I18n "auth.logout"}}</a></li>
+  </ul>
+</nav>
+{{end}}
