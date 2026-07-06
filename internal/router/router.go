@@ -22,6 +22,7 @@ type Deps struct {
 	CheckInController      *controller.CheckInController
 	LogController          *controller.LogController
 	OperationLogMiddleware gin.HandlerFunc
+	RateLimitMiddleware    gin.HandlerFunc
 }
 
 // New 构造 Gin 引擎并注册路由。
@@ -38,9 +39,9 @@ func New(cfg *config.Config, deps *Deps) *gin.Engine {
 		response.OK(c, gin.H{"status": "ok"})
 	})
 
-	// API v1：统一挂载 i18n 中间件解析语种，操作日志中间件自动落库
+	// API v1：限流最先执行 → i18n 解析语种 → 操作日志落库
 	api := r.Group("/api/v1")
-	api.Use(deps.I18NMiddleware, deps.OperationLogMiddleware)
+	api.Use(deps.RateLimitMiddleware, deps.I18NMiddleware, deps.OperationLogMiddleware)
 
 	// --- 多语言（可选鉴权：匿名也能切换，登录则持久化） ---
 	locale := api.Group("/locale")

@@ -72,6 +72,7 @@ func main() {
 	jwtOptionalMW := middleware.JWTOptional(jwtMgr, userRepo)
 	i18nMW := middleware.I18N(i18nStore)
 	operationLogMW := middleware.OperationLog(operationLogRepo)
+	rateLimitMW := middleware.RateLimit(cfg.RateLimit.PerSecond)
 
 	r := router.New(cfg, &router.Deps{
 		I18NMiddleware:         i18nMW,
@@ -85,6 +86,7 @@ func main() {
 		CheckInController:      checkInCtrl,
 		LogController:          logCtrl,
 		OperationLogMiddleware: operationLogMW,
+		RateLimitMiddleware:    rateLimitMW,
 	})
 
 	addr := fmt.Sprintf(":%d", cfg.App.Port)
