@@ -1,0 +1,49 @@
+{{define "page_checkin"}}
+<div id="checkin-root" class="ly-checkin">
+  <div class="ly-panel-head">
+    <strong>{{index .I18n "checkin.date"}}</strong>
+    <input type="date" id="ci-date" class="ci-date">
+    <button type="button" id="ci-today" class="small">{{index .I18n "nav.home"}}</button>
+  </div>
+
+  <div class="ly-ci-grid">
+    <section>
+      <h4>{{index .I18n "checkin.record"}}</h4>
+      <form id="ci-record-form">
+        <label>{{index .I18n "checkin.type"}}
+          <select id="ci-type">
+            <option value="water">{{index .I18n "checkin.water"}}</option>
+            <option value="exercise">{{index .I18n "checkin.exercise"}}</option>
+            <option value="nap">{{index .I18n "checkin.nap"}}</option>
+          </select>
+        </label>
+        <label>{{index .I18n "checkin.value"}}
+          <input type="number" id="ci-value" min="0.1" step="0.1" required>
+        </label>
+        <button type="submit" id="ci-submit">{{index .I18n "checkin.record"}}</button>
+      </form>
+      <div id="ci-msg" class="auth-msg" role="alert" hidden></div>
+
+      <h4 style="margin-top:1.5rem">{{index .I18n "checkin.target"}}</h4>
+      <div id="ci-goals"></div>
+    </section>
+
+    <section>
+      <h4>{{index .I18n "checkin.report"}}</h4>
+      <div id="ci-report"></div>
+      <p id="ci-report-empty" class="muted" hidden>{{index .I18n "common.empty"}}</p>
+
+      <h4 style="margin-top:1.5rem">{{index .I18n "checkin.records"}}</h4>
+      <table id="ci-table">
+        <thead><tr>
+          <th>{{index .I18n "checkin.type"}}</th>
+          <th>{{index .I18n "checkin.value"}}</th>
+          <th>{{index .I18n "checkin.date"}}</th>
+        </tr></thead>
+        <tbody id="ci-list"></tbody>
+      </table>
+      <p id="ci-list-empty" class="muted" hidden>{{index .I18n "common.empty"}}</p>
+    </section>
+  </div>
+</div>
+{{end}}

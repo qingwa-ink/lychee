@@ -169,3 +169,31 @@ button.danger, .danger { color: var(--ly-err); }
 .st-completed { color: var(--ly-ok); }
 .due { color: var(--ly-muted); }
 
+/* 打卡与健康（F1.4） */
+.ly-ci-grid {
+  display: grid;
+  grid-template-columns: 22rem 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 768px) { .ly-ci-grid { grid-template-columns: 1fr; } }
+.ci-date { max-width: 12rem; }
+
+.ci-report-item {
+  border: 1px solid var(--pico-muted-border-color, #eee);
+  border-radius: .35rem;
+  padding: .6rem .75rem;
+  margin-bottom: .6rem;
+}
+.ci-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: .4rem; }
+.ci-total { color: var(--ly-muted); font-size: .9rem; }
+
+.ci-goal-row {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-bottom: .5rem;
+}
+.ci-goal-label { width: 9rem; font-size: .9rem; }
+.ci-goal-input { max-width: 8rem; margin: 0; }
+

@@ -55,7 +55,9 @@ func (ctrl *PageController) appPage(page, titleKey string) gin.HandlerFunc {
 	}
 }
 
-func (ctrl *PageController) AppCheckIn(c *gin.Context) { ctrl.appPage("checkin", "nav.checkin")(c) }
+func (ctrl *PageController) AppCheckIn(c *gin.Context) {
+	ctrl.render(c, "checkin", "page_checkin", "nav.checkin", true, []string{"/static/js/pages/checkin.js"})
+}
 func (ctrl *PageController) AppLogs(c *gin.Context)    { ctrl.appPage("logs", "nav.logs")(c) }
 
 // /app/tasks — 任务看板（F1.3）：Jet 渲染两栏骨架，注入页面后由 tasks.js 接管交互。

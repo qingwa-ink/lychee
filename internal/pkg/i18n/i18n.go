@@ -204,6 +204,22 @@ var zhCatalog = map[string]string{
 	"task.copy_done":           "已复制到剪贴板",
 	"task.confirm_delete_group": "删除分组将级联删除其下所有子分组与任务，确认？",
 	"task.confirm_delete_task": "确认删除该任务？",
+
+	// 打卡与健康（F1.4）
+	"checkin.record":      "记一笔",
+	"checkin.type":        "类型",
+	"checkin.value":       "数值",
+	"checkin.date":        "日期",
+	"checkin.report":      "每日报告",
+	"checkin.target":      "每日目标",
+	"checkin.set_target":  "设置目标",
+	"checkin.achievement": "完成度",
+	"checkin.records":     "打卡记录",
+	"checkin.no_goal":     "未设目标",
+	"checkin.recorded":    "已打卡",
+	"checkin.water":       "喝水",
+	"checkin.exercise":    "起身运动",
+	"checkin.nap":         "午休",
 }
 
 var enCatalog = map[string]string{
@@ -298,4 +314,20 @@ var enCatalog = map[string]string{
 	"task.copy_done":           "Copied to clipboard",
 	"task.confirm_delete_group": "Deleting a group cascades to all subgroups and tasks. Confirm?",
 	"task.confirm_delete_task": "Delete this task?",
+
+	// Check-in & wellness (F1.4)
+	"checkin.record":      "Add Record",
+	"checkin.type":        "Type",
+	"checkin.value":       "Value",
+	"checkin.date":        "Date",
+	"checkin.report":      "Daily Report",
+	"checkin.target":      "Daily Target",
+	"checkin.set_target":  "Set Target",
+	"checkin.achievement": "Achievement",
+	"checkin.records":     "Records",
+	"checkin.no_goal":     "No target",
+	"checkin.recorded":    "Recorded",
+	"checkin.water":       "Water",
+	"checkin.exercise":    "Exercise",
+	"checkin.nap":         "Nap",
 }
