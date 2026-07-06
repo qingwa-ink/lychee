@@ -1,0 +1,16 @@
+# 编译产物
+/bin/
+
+# SQLite 数据文件
+/data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# IDE
+.idea/
+.vscode/
+
+# 操作系统
+.DS_Store

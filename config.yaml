@@ -1,0 +1,29 @@
+# ========== 应用 ==========
+app:
+  port: 8080
+  env: dev            # dev / prod
+
+# ========== JWT 认证 ==========
+jwt:
+  secret: "change-me-in-production"
+  access_ttl: "15m"      # Access Token 有效期
+  refresh_ttl: "168h"    # Refresh Token 有效期（7 天）
+
+# ========== 接口限流 ==========
+rate_limit:
+  per_second: 1       # 同一接口每 IP 每秒最大请求数
+
+# ========== 邮件（发送验证码） ==========
+mail:
+  host: ""
+  port: 465
+  user: ""
+  pass: ""
+
+# ========== 多语言 ==========
+i18n:
+  default: "zh"       # zh / en
+
+# ========== 数据库 ==========
+db:
+  path: "./data/lychee.db"
