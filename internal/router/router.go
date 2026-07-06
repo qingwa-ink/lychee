@@ -19,7 +19,8 @@ type Deps struct {
 	PhraseController      *controller.PhraseController
 	TaskGroupController   *controller.TaskGroupController
 	TaskController        *controller.TaskController
-	// 后续里程碑：CheckInController / ...
+	CheckInController     *controller.CheckInController
+	// 后续里程碑：LogController / ...
 }
 
 // New 构造 Gin 引擎并注册路由。
@@ -97,6 +98,17 @@ func New(cfg *config.Config, deps *Deps) *gin.Engine {
 		tasks.GET("/:id", deps.TaskController.Get)
 		tasks.PUT("/:id", deps.TaskController.Update)
 		tasks.DELETE("/:id", deps.TaskController.Delete)
+	}
+
+	// 打卡与健康（记录/每日目标/每日报告）
+	checkin := api.Group("/check-in")
+	checkin.Use(deps.JWTMiddleware)
+	{
+		checkin.GET("/records", deps.CheckInController.ListRecords)
+		checkin.POST("/records", deps.CheckInController.CreateRecord)
+		checkin.GET("/report", deps.CheckInController.Report)
+		checkin.GET("/goals", deps.CheckInController.ListGoals)
+		checkin.PUT("/goals", deps.CheckInController.UpsertGoal)
 	}
 
 	return r

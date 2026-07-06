@@ -59,6 +59,11 @@ func main() {
 	taskGroupCtrl := controller.NewTaskGroupController(taskGroupSvc)
 	taskCtrl := controller.NewTaskController(taskSvc)
 
+	checkInRecordRepo := repository.NewCheckInRecordRepository(db)
+	checkInGoalRepo := repository.NewCheckInGoalRepository(db)
+	checkInSvc := service.NewCheckInService(checkInRecordRepo, checkInGoalRepo)
+	checkInCtrl := controller.NewCheckInController(checkInSvc)
+
 	jwtMW := middleware.JWT(jwtMgr, userRepo)
 	jwtOptionalMW := middleware.JWTOptional(jwtMgr, userRepo)
 	i18nMW := middleware.I18N(i18nStore)
@@ -72,6 +77,7 @@ func main() {
 		PhraseController:      phraseCtrl,
 		TaskGroupController:   taskGroupCtrl,
 		TaskController:        taskCtrl,
+		CheckInController:     checkInCtrl,
 	})
 
 	addr := fmt.Sprintf(":%d", cfg.App.Port)
