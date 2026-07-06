@@ -25,8 +25,8 @@ func (ctrl *LogController) Operations(c *gin.Context) {
 	page, pageSize := parsePagination(c)
 	list, total, err := ctrl.svc.List(c.Request.Context(), userID, repository.LogFilter{
 		Category: c.Query("category"),
-		Start:    parseTimeQuery(c.Query("start")),
-		End:      parseTimeQuery(c.Query("end")),
+		Start:    parseTimeQuery(c.Query("start"), false),
+		End:      parseTimeQuery(c.Query("end"), true),
 		Page:     page,
 		PageSize: pageSize,
 	})
@@ -53,8 +53,8 @@ func (ctrl *LogController) Logins(c *gin.Context) {
 	userID := c.GetUint(CtxUserID)
 	page, pageSize := parsePagination(c)
 	list, total, err := ctrl.svc.ListLogins(c.Request.Context(), userID, repository.LogFilter{
-		Start:    parseTimeQuery(c.Query("start")),
-		End:      parseTimeQuery(c.Query("end")),
+		Start:    parseTimeQuery(c.Query("start"), false),
+		End:      parseTimeQuery(c.Query("end"), true),
 		Page:     page,
 		PageSize: pageSize,
 	})
@@ -66,15 +66,22 @@ func (ctrl *LogController) Logins(c *gin.Context) {
 }
 
 // parseTimeQuery 解析可选时间查询参数（RFC3339 或 YYYY-MM-DD）。
-func parseTimeQuery(s string) *time.Time {
+// 日期按服务器本地时区解析；endOfDay=true 时日期补 +24h，使区间包含所选整天
+// （否则当日 00:00 作为上界会把当天的记录排除）。
+func parseTimeQuery(s string, endOfDay bool) *time.Time {
 	if s == "" {
 		return nil
 	}
-	if t, err := time.Parse(time.RFC3339, s); err == nil {
-		return &t
+	var t time.Time
+	if tt, err := time.Parse(time.RFC3339, s); err == nil {
+		t = tt
+	} else if tt, err := time.ParseInLocation("2006-01-02", s, time.Local); err == nil {
+		t = tt
+		if endOfDay {
+			t = t.Add(24 * time.Hour)
+		}
+	} else {
+		return nil
 	}
-	if t, err := time.Parse("2006-01-02", s); err == nil {
-		return &t
-	}
-	return nil
+	return &t
 }

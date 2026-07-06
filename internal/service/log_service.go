@@ -55,17 +55,25 @@ func (s *LogService) Report(ctx context.Context, userID uint, dimension, start, 
 		} else {
 			return nil, bizerr.New(bizerr.CodeBadRequest, "end 时间格式应为 RFC3339 或 YYYY-MM-DD")
 		}
+		// 日期（YYYY-MM-DD）按当日 00:00 解析为下界时会把当天的记录排除在外，
+		// 故 end 用日期时补 +24h，使区间包含所选整天。
+		if isDateOnly(end) {
+			et = et.Add(24 * time.Hour)
+		}
 	}
 	return s.repo.Report(userID, dimension, st, et)
 }
 
-// parseTime 兼容 RFC3339 与 YYYY-MM-DD（日期按当日 00:00 解析）。
+// parseTime 兼容 RFC3339 与 YYYY-MM-DD；日期按服务器本地时区的当日 00:00 解析，
+// 与 created_at（带时区偏移存储）的本地视角一致。
 func parseTime(s string) (time.Time, bool) {
 	if t, err := time.Parse(time.RFC3339, s); err == nil {
 		return t, true
 	}
-	if t, err := time.Parse("2006-01-02", s); err == nil {
+	if t, err := time.ParseInLocation("2006-01-02", s, time.Local); err == nil {
 		return t, true
 	}
 	return time.Time{}, false
 }
+
+func isDateOnly(s string) bool { return len(s) == 10 }

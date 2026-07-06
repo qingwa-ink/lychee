@@ -1,0 +1,52 @@
+{* logs.jet — 操作日志 / 登录日志 + Chart.js 柱状图（Jet 渲染整页，logs.js 接管交互） *}
+
+<div class="ly-chart-panel">
+  <div class="ly-panel-head">
+    <strong>{{ i18n["logs.chart_title"] }}</strong>
+    <select id="log-dim">
+      <option value="day">{{ i18n["logs.by_day"] }}</option>
+      <option value="hour">{{ i18n["logs.by_hour"] }}</option>
+    </select>
+    <input type="date" id="log-start" class="ci-date">
+    <input type="date" id="log-end" class="ci-date">
+    <button type="button" id="log-redraw" class="small">{{ i18n["common.search"] }}</button>
+  </div>
+  <div class="ly-chart-wrap"><canvas id="log-chart"></canvas></div>
+</div>
+
+<h3 style="margin-top:1.5rem">{{ i18n["logs.operations"] }}</h3>
+<div class="ly-filters">
+  <select id="op-cat">
+    <option value="">{{ i18n["logs.category"] }}</option>
+    <option value="login">{{ i18n["logs.cat_login"] }}</option>
+    <option value="operation">{{ i18n["logs.cat_operation"] }}</option>
+  </select>
+  <input type="date" id="op-start" class="ci-date">
+  <input type="date" id="op-end" class="ci-date">
+  <button type="button" id="op-search" class="small">{{ i18n["common.search"] }}</button>
+</div>
+<table id="op-table">
+  <thead><tr>
+    <th>{{ i18n["common.created_at"] }}</th>
+    <th>{{ i18n["logs.category"] }}</th>
+    <th>{{ i18n["logs.action"] }}</th>
+    <th>{{ i18n["logs.path"] }}</th>
+    <th>{{ i18n["logs.ip"] }}</th>
+  </tr></thead>
+  <tbody id="op-list"></tbody>
+</table>
+<p id="op-empty" class="muted" hidden>{{ i18n["common.empty"] }}</p>
+<div id="op-pager" class="phrase-pager"></div>
+
+<h3 style="margin-top:1.5rem">{{ i18n["logs.logins"] }}</h3>
+<table id="lg-table">
+  <thead><tr>
+    <th>{{ i18n["common.created_at"] }}</th>
+    <th>{{ i18n["logs.ip"] }}</th>
+    <th>{{ i18n["logs.ua"] }}</th>
+  </tr></thead>
+  <tbody id="lg-list"></tbody>
+</table>
+<p id="lg-empty" class="muted" hidden>{{ i18n["common.empty"] }}</p>
+<div id="lg-pager" class="phrase-pager"></div>
+<div id="log-msg" class="auth-msg" role="alert" hidden></div>

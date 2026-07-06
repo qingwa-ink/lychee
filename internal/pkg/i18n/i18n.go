@@ -220,6 +220,20 @@ var zhCatalog = map[string]string{
 	"checkin.water":       "喝水",
 	"checkin.exercise":    "起身运动",
 	"checkin.nap":         "午休",
+
+	// 操作日志与图表（F1.5）
+	"logs.chart_title":  "操作频率",
+	"logs.by_day":       "按天",
+	"logs.by_hour":      "按小时",
+	"logs.operations":   "操作历史",
+	"logs.logins":       "登录日志",
+	"logs.category":     "类别",
+	"logs.cat_login":    "登录",
+	"logs.cat_operation": "操作",
+	"logs.action":       "动作",
+	"logs.path":         "路径",
+	"logs.ip":           "IP",
+	"logs.ua":           "客户端",
 }
 
 var enCatalog = map[string]string{
@@ -330,4 +344,18 @@ var enCatalog = map[string]string{
 	"checkin.water":       "Water",
 	"checkin.exercise":    "Exercise",
 	"checkin.nap":         "Nap",
+
+	// Operation logs & charts (F1.5)
+	"logs.chart_title":  "Activity Frequency",
+	"logs.by_day":       "By Day",
+	"logs.by_hour":      "By Hour",
+	"logs.operations":   "Operations",
+	"logs.logins":       "Logins",
+	"logs.category":     "Category",
+	"logs.cat_login":    "Login",
+	"logs.cat_operation": "Operation",
+	"logs.action":       "Action",
+	"logs.path":         "Path",
+	"logs.ip":           "IP",
+	"logs.ua":           "Client",
 }

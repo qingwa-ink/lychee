@@ -197,3 +197,12 @@ button.danger, .danger { color: var(--ly-err); }
 .ci-goal-label { width: 9rem; font-size: .9rem; }
 .ci-goal-input { max-width: 8rem; margin: 0; }
 
+/* 操作日志与图表（F1.5） */
+.ly-chart-panel {
+  border: 1px solid var(--pico-muted-border-color, #eee);
+  border-radius: .4rem;
+  padding: .75rem;
+}
+.ly-chart-wrap { position: relative; height: 18rem; }
+.ua-cell { max-width: 24rem; word-break: break-word; }
+

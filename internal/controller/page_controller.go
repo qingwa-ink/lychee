@@ -58,7 +58,17 @@ func (ctrl *PageController) appPage(page, titleKey string) gin.HandlerFunc {
 func (ctrl *PageController) AppCheckIn(c *gin.Context) {
 	ctrl.render(c, "checkin", "page_checkin", "nav.checkin", true, []string{"/static/js/pages/checkin.js"})
 }
-func (ctrl *PageController) AppLogs(c *gin.Context)    { ctrl.appPage("logs", "nav.logs")(c) }
+// /app/logs — 操作日志 + 图表（F1.5）：Jet 渲染整页（含 Chart.js 容器），logs.js 接管。
+func (ctrl *PageController) AppLogs(c *gin.Context) {
+	locale := c.GetString("locale")
+	page, err := ctrl.r.Fragment("logs", locale, nil)
+	if err != nil {
+		c.String(500, "render logs: %v", err)
+		return
+	}
+	ctrl.renderData(c, "logs", "page_logs", "nav.logs", true,
+		[]string{"/static/vendor/chart.umd.min.js", "/static/js/pages/logs.js"}, page)
+}
 
 // /app/tasks — 任务看板（F1.3）：Jet 渲染两栏骨架，注入页面后由 tasks.js 接管交互。
 func (ctrl *PageController) AppTasks(c *gin.Context) {
