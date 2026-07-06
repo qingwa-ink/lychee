@@ -67,3 +67,18 @@ body { min-height: 100vh; }
 @media (max-width: 768px) {
   .ly-two-col { grid-template-columns: 1fr; }
 }
+
+/* 表格与分页（常用语等列表页） */
+.small { font-size: .85rem; }
+td.phrase-cell { word-break: break-word; max-width: 30rem; white-space: pre-wrap; }
+.phrase-pager {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-top: .75rem;
+}
+.phrase-pager button { padding: .25rem .6rem; }
+.phrase-pager span { color: var(--ly-muted); font-size: .9rem; }
+#phrase-edit-dlg { max-width: 40rem; width: 90%; }
+#phrase-edit-dlg textarea { width: 100%; }
+

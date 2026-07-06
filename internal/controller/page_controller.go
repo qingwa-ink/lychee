@@ -42,15 +42,23 @@ func (ctrl *PageController) ForgotPassword(c *gin.Context) {
 	ctrl.render(c, "forgot", "page_forgot", "auth.forgot_password", false, []string{"/static/js/pages/forgot.js"})
 }
 
-// 应用页（带导航，客户端鉴权）— F1.1 先渲染统一外壳，后续阶段替换为真实内容
+// 应用页（带导航，客户端鉴权）— 未实现页先用通用外壳占位
 func (ctrl *PageController) appPage(page, titleKey string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctrl.render(c, page, "page_app", titleKey, true, []string{"/static/js/pages/app.js"})
 	}
 }
 
-func (ctrl *PageController) AppTasks(c *gin.Context)    { ctrl.appPage("tasks", "nav.tasks")(c) }
-func (ctrl *PageController) AppPhrases(c *gin.Context)  { ctrl.appPage("phrases", "nav.phrases")(c) }
-func (ctrl *PageController) AppCheckIn(c *gin.Context)  { ctrl.appPage("checkin", "nav.checkin")(c) }
-func (ctrl *PageController) AppLogs(c *gin.Context)     { ctrl.appPage("logs", "nav.logs")(c) }
-func (ctrl *PageController) AppSettings(c *gin.Context) { ctrl.appPage("settings", "nav.settings")(c) }
+func (ctrl *PageController) AppTasks(c *gin.Context)   { ctrl.appPage("tasks", "nav.tasks")(c) }
+func (ctrl *PageController) AppCheckIn(c *gin.Context) { ctrl.appPage("checkin", "nav.checkin")(c) }
+func (ctrl *PageController) AppLogs(c *gin.Context)    { ctrl.appPage("logs", "nav.logs")(c) }
+
+// /app/phrases — 常用语管理（F1.2）
+func (ctrl *PageController) AppPhrases(c *gin.Context) {
+	ctrl.render(c, "phrases", "page_phrases", "nav.phrases", true, []string{"/static/js/pages/phrases.js"})
+}
+
+// /app/settings — 个人设置（改密、语种）（F1.2）
+func (ctrl *PageController) AppSettings(c *gin.Context) {
+	ctrl.render(c, "settings", "page_settings", "nav.settings", true, []string{"/static/js/pages/settings.js"})
+}

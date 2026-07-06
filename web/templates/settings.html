@@ -1,0 +1,38 @@
+{{define "page_settings"}}
+<div id="settings-root">
+  <h3>{{index .I18n "settings.account"}}</h3>
+  <p class="muted" id="settings-email">{{index .I18n "common.loading"}}</p>
+
+  <h3>{{index .I18n "settings.language"}}</h3>
+  <p>
+    <button type="button" onclick="return switchLocale('zh')">中文</button>
+    <button type="button" onclick="return switchLocale('en')">English</button>
+  </p>
+
+  <h3>{{index .I18n "settings.change_password"}}</h3>
+  <form id="pw-form" style="max-width:30rem">
+    <fieldset>
+      <label><input type="radio" name="method" value="old" checked> {{index .I18n "settings.use_old_password"}}</label>
+      <label><input type="radio" name="method" value="code"> {{index .I18n "settings.use_code"}}</label>
+    </fieldset>
+
+    <label for="pw-old">{{index .I18n "auth.old_password"}}</label>
+    <input type="password" id="pw-old" name="old" autocomplete="current-password" data-method="old">
+
+    <label for="pw-code">{{index .I18n "auth.code"}}</label>
+    <div class="grid">
+      <input type="text" id="pw-code" name="code" inputmode="numeric" maxlength="6" data-method="code">
+      <button type="button" id="pw-send-code">{{index .I18n "auth.send_code"}}</button>
+    </div>
+
+    <label for="pw-new">{{index .I18n "auth.new_password"}}</label>
+    <input type="password" id="pw-new" name="new" autocomplete="new-password" minlength="6" required>
+
+    <label for="pw-confirm">{{index .I18n "auth.confirm_password"}}</label>
+    <input type="password" id="pw-confirm" name="confirm" autocomplete="new-password" minlength="6" required>
+
+    <button type="submit" id="pw-submit">{{index .I18n "common.save"}}</button>
+  </form>
+  <div id="pw-msg" class="auth-msg" role="alert" hidden></div>
+</div>
+{{end}}

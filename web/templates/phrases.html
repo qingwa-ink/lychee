@@ -1,0 +1,36 @@
+{{define "page_phrases"}}
+<div id="phrases-root">
+  <h3>{{index .I18n "phrases.new"}}</h3>
+  <form id="phrase-form" style="max-width:42rem">
+    <textarea id="phrase-input" rows="2" maxlength="2000" placeholder="{{index .I18n "phrases.placeholder"}}" required></textarea>
+    <button type="submit" id="phrase-submit">{{index .I18n "common.create"}}</button>
+  </form>
+  <div id="phrase-msg" class="auth-msg" role="alert" hidden></div>
+
+  <h3>{{index .I18n "nav.phrases"}}</h3>
+  <table id="phrase-table">
+    <thead>
+      <tr>
+        <th>{{index .I18n "phrases.content"}}</th>
+        <th>{{index .I18n "common.updated_at"}}</th>
+        <th>{{index .I18n "common.operation"}}</th>
+      </tr>
+    </thead>
+    <tbody id="phrase-list"></tbody>
+  </table>
+  <p id="phrase-empty" class="muted" hidden>{{index .I18n "phrases.empty"}}</p>
+  <div id="phrase-pager" class="phrase-pager"></div>
+
+  <!-- 编辑弹框（对话框元素） -->
+  <dialog id="phrase-edit-dlg">
+    <form method="dialog" id="phrase-edit-form">
+      <h5>{{index .I18n "common.edit"}}</h5>
+      <textarea id="phrase-edit-input" rows="3" maxlength="2000" required></textarea>
+      <div class="grid">
+        <button type="button" id="phrase-edit-cancel" value="cancel">{{index .I18n "common.cancel"}}</button>
+        <button type="submit" id="phrase-edit-save" value="save">{{index .I18n "common.save"}}</button>
+      </div>
+    </form>
+  </dialog>
+</div>
+{{end}}

@@ -168,6 +168,23 @@ var zhCatalog = map[string]string{
 	"auth.register_done":    "注册成功，请登录",
 	"auth.session_expired":  "登录已过期，请重新登录",
 	"auth.ratelimited":      "操作过于频繁，请稍后再试",
+
+	// 设置与常用语页（F1.2）
+	"settings.account":         "账号",
+	"settings.language":        "语言",
+	"settings.change_password": "修改密码",
+	"settings.use_old_password": "用旧密码验证",
+	"settings.use_code":         "用验证码验证",
+	"settings.pw_changed":      "密码修改成功，请重新登录",
+	"phrases.new":              "新建常用语",
+	"phrases.content":          "内容",
+	"phrases.placeholder":      "输入常用语内容…",
+	"phrases.empty":            "暂无常用语",
+	"phrases.saved":            "已保存",
+	"phrases.deleted":          "已删除",
+	"common.prev":              "上一页",
+	"common.next":              "下一页",
+	"common.confirm_delete":    "确认删除？",
 }
 
 var enCatalog = map[string]string{
@@ -226,4 +243,21 @@ var enCatalog = map[string]string{
 	"auth.register_done":    "Registered, please login",
 	"auth.session_expired":  "Session expired, please login again",
 	"auth.ratelimited":      "Too many requests, please try later",
+
+	// Settings & phrases pages (F1.2)
+	"settings.account":         "Account",
+	"settings.language":        "Language",
+	"settings.change_password": "Change Password",
+	"settings.use_old_password": "Verify with old password",
+	"settings.use_code":         "Verify with code",
+	"settings.pw_changed":      "Password changed, please login again",
+	"phrases.new":              "New Phrase",
+	"phrases.content":          "Content",
+	"phrases.placeholder":      "Enter phrase content…",
+	"phrases.empty":            "No phrases",
+	"phrases.saved":            "Saved",
+	"phrases.deleted":          "Deleted",
+	"common.prev":              "Prev",
+	"common.next":              "Next",
+	"common.confirm_delete":    "Confirm delete?",
 }
