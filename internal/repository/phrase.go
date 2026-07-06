@@ -20,15 +20,14 @@ func (r *PhraseRepository) Create(p *model.Phrase) error {
 	return r.db.Create(p).Error
 }
 
-// ListByUser 分页查询某用户的常用语，按更新时间倒序。返回列表与总数。
+// ListByUser 分页查询某用户的常用语，按更新时间倒序。count 与 find 各自从 r.db 构建。
 func (r *PhraseRepository) ListByUser(userID uint, page, pageSize int) ([]model.Phrase, int64, error) {
-	var list []model.Phrase
 	var total int64
-	q := r.db.Where("user_id = ?", userID)
-	if err := q.Model(&model.Phrase{}).Count(&total).Error; err != nil {
+	if err := r.db.Where("user_id = ?", userID).Model(&model.Phrase{}).Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
-	if err := q.Order("updated_at DESC").
+	var list []model.Phrase
+	if err := r.db.Where("user_id = ?", userID).Order("updated_at DESC").
 		Offset((page - 1) * pageSize).Limit(pageSize).
 		Find(&list).Error; err != nil {
 		return nil, 0, err

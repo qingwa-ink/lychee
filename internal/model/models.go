@@ -57,7 +57,9 @@ type Task struct {
 	UserID   uint       `gorm:"index;not null" json:"user_id"`
 	GroupID  uint       `gorm:"index;not null" json:"group_id"`
 	Content  string     `gorm:"not null" json:"content"`
-	Priority int        `gorm:"default:3" json:"priority"`            // 0-5，P0 最高
+	// 不设 gORM default：0（P0）是合法值，若带 default:3，零值会被 INSERT 省略而写入 3。
+	// 默认值由 TaskService.Create 统一赋予（PriorityDef）。
+	Priority int        `json:"priority"` // 0-5，P0 最高
 	Status   string     `gorm:"default:'editing'" json:"status"`      // editing / pending / completed
 	DueDate  *time.Time `gorm:"index" json:"due_date"`
 }

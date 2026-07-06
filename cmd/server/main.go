@@ -52,6 +52,13 @@ func main() {
 	phraseSvc := service.NewPhraseService(phraseRepo)
 	phraseCtrl := controller.NewPhraseController(phraseSvc)
 
+	taskGroupRepo := repository.NewTaskGroupRepository(db)
+	taskRepo := repository.NewTaskRepository(db)
+	taskGroupSvc := service.NewTaskGroupService(taskGroupRepo)
+	taskSvc := service.NewTaskService(taskRepo, taskGroupRepo)
+	taskGroupCtrl := controller.NewTaskGroupController(taskGroupSvc)
+	taskCtrl := controller.NewTaskController(taskSvc)
+
 	jwtMW := middleware.JWT(jwtMgr, userRepo)
 	jwtOptionalMW := middleware.JWTOptional(jwtMgr, userRepo)
 	i18nMW := middleware.I18N(i18nStore)
@@ -63,6 +70,8 @@ func main() {
 		AuthController:        authCtrl,
 		LocaleController:      localeCtrl,
 		PhraseController:      phraseCtrl,
+		TaskGroupController:   taskGroupCtrl,
+		TaskController:        taskCtrl,
 	})
 
 	addr := fmt.Sprintf(":%d", cfg.App.Port)
