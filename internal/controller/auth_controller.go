@@ -117,3 +117,44 @@ func (ctrl *AuthController) Profile(c *gin.Context) {
 		"locale": user.Locale,
 	})
 }
+
+type forgotPasswordReq struct {
+	Email       string `json:"email" binding:"required,email"`
+	Code        string `json:"code" binding:"required,len=6"`
+	NewPassword string `json:"new_password" binding:"required,min=6,max=64"`
+}
+
+// ForgotPassword 忘记密码（公开接口）。
+func (ctrl *AuthController) ForgotPassword(c *gin.Context) {
+	var req forgotPasswordReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Fail(c, errors.ErrBadRequest)
+		return
+	}
+	if err := ctrl.svc.ForgotPassword(c.Request.Context(), req.Email, req.Code, req.NewPassword); err != nil {
+		response.Fail(c, err)
+		return
+	}
+	response.OK(c, gin.H{"message": "密码已重置，请重新登录"})
+}
+
+type changePasswordReq struct {
+	OldPassword string `json:"old_password"`
+	Code        string `json:"code"`
+	NewPassword string `json:"new_password" binding:"required,min=6,max=64"`
+}
+
+// ChangePassword 个人设置：修改密码（需登录，验证码或旧密码二选一）。
+func (ctrl *AuthController) ChangePassword(c *gin.Context) {
+	var req changePasswordReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Fail(c, errors.ErrBadRequest)
+		return
+	}
+	userID := c.GetUint(CtxUserID)
+	if err := ctrl.svc.ChangePassword(c.Request.Context(), userID, req.OldPassword, req.Code, req.NewPassword); err != nil {
+		response.Fail(c, err)
+		return
+	}
+	response.OK(c, gin.H{"message": "密码修改成功"})
+}

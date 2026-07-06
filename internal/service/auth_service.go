@@ -148,6 +148,67 @@ func (s *AuthService) Profile(userID uint) (*model.User, error) {
 	return user, nil
 }
 
+// ForgotPassword 校验忘记密码验证码并重置密码，随后吊销该用户全部历史会话。
+func (s *AuthService) ForgotPassword(ctx context.Context, email, code, newPlain string) error {
+	rec, err := s.codeRepo.FindValidCode(email, CodeTypeForgot, code)
+	if err != nil {
+		return bizerr.New(bizerr.CodeBadRequest, "验证码无效或已过期")
+	}
+	user, err := s.userRepo.FindByEmail(email)
+	if err != nil {
+		return bizerr.New(bizerr.CodeNotFound, "该邮箱未注册")
+	}
+	hash, err := password.Hash(newPlain)
+	if err != nil {
+		return bizerr.ErrInternal
+	}
+	if err := s.userRepo.UpdatePassword(user.ID, hash); err != nil {
+		return bizerr.ErrInternal
+	}
+	_ = s.codeRepo.MarkUsed(rec.ID)
+	// 重置密码后吊销所有历史 Token，强制重新登录
+	_ = s.userRepo.IncrementTokenVersion(user.ID)
+	_ = s.refreshRepo.RevokeAllByUser(user.ID)
+	return nil
+}
+
+// ChangePassword 已登录用户修改密码，二选一校验：邮箱验证码（change_password）或旧密码。
+func (s *AuthService) ChangePassword(ctx context.Context, userID uint, oldPlain, code, newPlain string) error {
+	user, err := s.userRepo.FindByID(userID)
+	if err != nil {
+		return bizerr.ErrNotFound
+	}
+
+	// 校验方式二选一
+	var codeRec *model.EmailVerificationCode
+	switch {
+	case code != "":
+		rec, err := s.codeRepo.FindValidCode(user.Email, CodeTypeChangePassword, code)
+		if err != nil {
+			return bizerr.New(bizerr.CodeBadRequest, "验证码无效或已过期")
+		}
+		codeRec = rec
+	case oldPlain != "":
+		if !password.Compare(user.PasswordHash, oldPlain) {
+			return bizerr.New(bizerr.CodeBadRequest, "旧密码不正确")
+		}
+	default:
+		return bizerr.New(bizerr.CodeBadRequest, "请提供旧密码或验证码")
+	}
+
+	hash, err := password.Hash(newPlain)
+	if err != nil {
+		return bizerr.ErrInternal
+	}
+	if err := s.userRepo.UpdatePassword(user.ID, hash); err != nil {
+		return bizerr.ErrInternal
+	}
+	if codeRec != nil {
+		_ = s.codeRepo.MarkUsed(codeRec.ID)
+	}
+	return nil
+}
+
 // issueTokens 签发 Access + Refresh 双 Token，并将 refresh token 的哈希落库。
 func (s *AuthService) issueTokens(userID, ver uint) (access, refresh string, err error) {
 	access, refresh, err = s.jwt.Issue(userID, ver)

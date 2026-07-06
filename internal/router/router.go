@@ -39,6 +39,7 @@ func New(cfg *config.Config, deps *Deps) *gin.Engine {
 		auth.POST("/register", deps.AuthController.Register)
 		auth.POST("/login", deps.AuthController.Login)
 		auth.POST("/refresh", deps.AuthController.Refresh)
+		auth.POST("/forgot-password", deps.AuthController.ForgotPassword)
 	}
 
 	// --- 认证：需登录 ---
@@ -47,6 +48,7 @@ func New(cfg *config.Config, deps *Deps) *gin.Engine {
 	{
 		authAuthed.POST("/logout", deps.AuthController.Logout)
 		authAuthed.GET("/profile", deps.AuthController.Profile)
+		authAuthed.PUT("/password", deps.AuthController.ChangePassword)
 	}
 
 	// --- 需登录的业务接口（后续里程碑挂载） ---
