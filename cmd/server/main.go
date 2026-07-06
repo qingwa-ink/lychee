@@ -9,6 +9,7 @@ import (
 	"github.com/qingwa-ink/lychee/internal/config"
 	"github.com/qingwa-ink/lychee/internal/controller"
 	"github.com/qingwa-ink/lychee/internal/middleware"
+	"github.com/qingwa-ink/lychee/internal/pkg/i18n"
 	"github.com/qingwa-ink/lychee/internal/pkg/jwt"
 	"github.com/qingwa-ink/lychee/internal/pkg/mail"
 	"github.com/qingwa-ink/lychee/internal/repository"
@@ -35,6 +36,7 @@ func main() {
 	mailer := mail.NewMailer(mail.Config{
 		Host: cfg.Mail.Host, Port: cfg.Mail.Port, User: cfg.Mail.User, Pass: cfg.Mail.Pass,
 	})
+	i18nStore := i18n.New(cfg.I18N.Default)
 
 	// 仓储
 	userRepo := repository.NewUserRepository(db)
@@ -44,11 +46,18 @@ func main() {
 	// 服务 / 控制器 / 中间件
 	authSvc := service.NewAuthService(userRepo, codeRepo, refreshRepo, jwtMgr, mailer, 10*time.Minute)
 	authCtrl := controller.NewAuthController(authSvc)
+	localeCtrl := controller.NewLocaleController(i18nStore, authSvc)
+
 	jwtMW := middleware.JWT(jwtMgr, userRepo)
+	jwtOptionalMW := middleware.JWTOptional(jwtMgr, userRepo)
+	i18nMW := middleware.I18N(i18nStore)
 
 	r := router.New(cfg, &router.Deps{
-		AuthController: authCtrl,
-		JWTMiddleware:  jwtMW,
+		I18NMiddleware:        i18nMW,
+		JWTMiddleware:         jwtMW,
+		JWTOptionalMiddleware: jwtOptionalMW,
+		AuthController:        authCtrl,
+		LocaleController:      localeCtrl,
 	})
 
 	addr := fmt.Sprintf(":%d", cfg.App.Port)

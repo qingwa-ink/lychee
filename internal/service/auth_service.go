@@ -209,6 +209,14 @@ func (s *AuthService) ChangePassword(ctx context.Context, userID uint, oldPlain,
 	return nil
 }
 
+// SetLocale 更新当前用户语言偏好。
+func (s *AuthService) SetLocale(userID uint, locale string) error {
+	if err := s.userRepo.UpdateLocale(userID, locale); err != nil {
+		return bizerr.ErrInternal
+	}
+	return nil
+}
+
 // issueTokens 签发 Access + Refresh 双 Token，并将 refresh token 的哈希落库。
 func (s *AuthService) issueTokens(userID, ver uint) (access, refresh string, err error) {
 	access, refresh, err = s.jwt.Issue(userID, ver)

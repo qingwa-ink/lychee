@@ -15,30 +15,41 @@ import (
 // JWT 鉴权中间件：校验 Access Token，并将 user_id、locale 注入 context。
 func JWT(jwtMgr *jwt.Manager, userRepo *repository.UserRepository) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		header := c.GetHeader("Authorization")
-		if !strings.HasPrefix(header, "Bearer ") {
+		if !tryAuth(c, jwtMgr, userRepo) {
 			response.Fail(c, errors.ErrUnauthorized)
 			c.Abort()
 			return
 		}
-		tokenStr := strings.TrimPrefix(header, "Bearer ")
-
-		claims, err := jwtMgr.Parse(tokenStr)
-		if err != nil || claims.Type != jwt.TypeAccess {
-			response.Fail(c, errors.ErrUnauthorized)
-			c.Abort()
-			return
-		}
-
-		user, err := userRepo.FindByID(claims.UserID)
-		if err != nil || user.TokenVersion != claims.Ver {
-			response.Fail(c, errors.ErrUnauthorized)
-			c.Abort()
-			return
-		}
-
-		c.Set("user_id", user.ID)
-		c.Set("locale", user.Locale)
 		c.Next()
 	}
+}
+
+// JWTOptional 可选鉴权：携带有效 Token 则注入 user_id/locale，否则放行（匿名）。
+func JWTOptional(jwtMgr *jwt.Manager, userRepo *repository.UserRepository) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		tryAuth(c, jwtMgr, userRepo)
+		c.Next()
+	}
+}
+
+// tryAuth 尝试从 Authorization 头解析并校验用户；成功返回 true 并写入 context。
+func tryAuth(c *gin.Context, jwtMgr *jwt.Manager, userRepo *repository.UserRepository) bool {
+	header := c.GetHeader("Authorization")
+	if !strings.HasPrefix(header, "Bearer ") {
+		return false
+	}
+	tokenStr := strings.TrimPrefix(header, "Bearer ")
+
+	claims, err := jwtMgr.Parse(tokenStr)
+	if err != nil || claims.Type != jwt.TypeAccess {
+		return false
+	}
+	user, err := userRepo.FindByID(claims.UserID)
+	if err != nil || user.TokenVersion != claims.Ver {
+		return false
+	}
+
+	c.Set("user_id", user.ID)
+	c.Set("locale", user.Locale)
+	return true
 }

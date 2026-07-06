@@ -11,8 +11,11 @@ import (
 
 // Deps 路由所需依赖。各里程碑按需填充。
 type Deps struct {
-	AuthController *controller.AuthController
-	JWTMiddleware  gin.HandlerFunc
+	I18NMiddleware        gin.HandlerFunc
+	JWTMiddleware         gin.HandlerFunc
+	JWTOptionalMiddleware gin.HandlerFunc
+	AuthController        *controller.AuthController
+	LocaleController      *controller.LocaleController
 	// 后续里程碑：PhraseController / TaskController / ...
 }
 
@@ -30,7 +33,18 @@ func New(cfg *config.Config, deps *Deps) *gin.Engine {
 		response.OK(c, gin.H{"status": "ok"})
 	})
 
+	// API v1：统一挂载 i18n 中间件解析语种
 	api := r.Group("/api/v1")
+	api.Use(deps.I18NMiddleware)
+
+	// --- 多语言（可选鉴权：匿名也能切换，登录则持久化） ---
+	locale := api.Group("/locale")
+	locale.Use(deps.JWTOptionalMiddleware)
+	{
+		locale.GET("", deps.LocaleController.Get)
+		locale.PUT("", deps.LocaleController.Set)
+		locale.GET("/messages", deps.LocaleController.Messages)
+	}
 
 	// --- 认证：公开接口 ---
 	auth := api.Group("/auth")
