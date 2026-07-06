@@ -22,6 +22,7 @@ type User struct {
 	PasswordHash string `gorm:"not null" json:"-"` // bcrypt，禁止外泄
 	Locale       string `gorm:"default:'zh'" json:"locale"`
 	Status       int    `gorm:"default:1" json:"status"` // 1=正常
+	TokenVersion uint   `gorm:"default:0" json:"-"`      // 自增后吊销该用户所有历史 Token
 }
 
 // EmailVerificationCode 邮箱验证码。
@@ -92,4 +93,14 @@ type OperationLog struct {
 	IP        string    `gorm:"index" json:"ip"`
 	UA        string    `gorm:"column:ua" json:"ua"`
 	Params    string    `json:"params"`
+}
+
+// RefreshToken 存储已签发 Refresh Token 的哈希，用于一次性轮换与服务端吊销。
+type RefreshToken struct {
+	ID        uint      `gorm:"primaryKey" json:"id"`
+	UserID    uint      `gorm:"index;not null" json:"user_id"`
+	TokenHash string    `gorm:"uniqueIndex;not null" json:"-"` // sha256，禁止存原文
+	ExpiresAt time.Time `gorm:"not null" json:"expires_at"`
+	Revoked   bool      `gorm:"default:false" json:"revoked"`
+	CreatedAt time.Time `json:"created_at"`
 }

@@ -3,8 +3,10 @@ package repository
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/qingwa-ink/lychee/internal/config"
 	"github.com/qingwa-ink/lychee/internal/model"
@@ -22,8 +24,18 @@ func NewDB(cfg *config.Config) (*gorm.DB, error) {
 		}
 	}
 
+	// 业务中把 record not found 当作正常情况（查重、校验验证码等），因此静音该日志。
+	gormLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags),
+		logger.Config{
+			SlowThreshold:             200 * time.Millisecond,
+			LogLevel:                  logger.Warn,
+			IgnoreRecordNotFoundError: true,
+			Colorful:                  true,
+		},
+	)
 	db, err := gorm.Open(sqlite.Open(cfg.DB.Path), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Warn),
+		Logger: gormLogger,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("open sqlite: %w", err)
@@ -38,6 +50,7 @@ func NewDB(cfg *config.Config) (*gorm.DB, error) {
 		&model.CheckInRecord{},
 		&model.CheckInGoal{},
 		&model.OperationLog{},
+		&model.RefreshToken{},
 	); err != nil {
 		return nil, fmt.Errorf("auto migrate: %w", err)
 	}
