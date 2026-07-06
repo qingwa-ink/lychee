@@ -16,7 +16,8 @@ type Deps struct {
 	JWTOptionalMiddleware gin.HandlerFunc
 	AuthController        *controller.AuthController
 	LocaleController      *controller.LocaleController
-	// 后续里程碑：PhraseController / TaskController / ...
+	PhraseController      *controller.PhraseController
+	// 后续里程碑：TaskController / ...
 }
 
 // New 构造 Gin 引擎并注册路由。
@@ -65,9 +66,15 @@ func New(cfg *config.Config, deps *Deps) *gin.Engine {
 		authAuthed.PUT("/password", deps.AuthController.ChangePassword)
 	}
 
-	// --- 需登录的业务接口（后续里程碑挂载） ---
-	authed := api.Group("/")
-	authed.Use(deps.JWTMiddleware)
+	// --- 需登录的业务接口 ---
+	phrases := api.Group("/phrases")
+	phrases.Use(deps.JWTMiddleware)
+	{
+		phrases.GET("", deps.PhraseController.List)
+		phrases.POST("", deps.PhraseController.Create)
+		phrases.PUT("/:id", deps.PhraseController.Update)
+		phrases.DELETE("/:id", deps.PhraseController.Delete)
+	}
 
 	return r
 }

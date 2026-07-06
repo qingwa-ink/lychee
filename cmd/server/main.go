@@ -48,6 +48,10 @@ func main() {
 	authCtrl := controller.NewAuthController(authSvc)
 	localeCtrl := controller.NewLocaleController(i18nStore, authSvc)
 
+	phraseRepo := repository.NewPhraseRepository(db)
+	phraseSvc := service.NewPhraseService(phraseRepo)
+	phraseCtrl := controller.NewPhraseController(phraseSvc)
+
 	jwtMW := middleware.JWT(jwtMgr, userRepo)
 	jwtOptionalMW := middleware.JWTOptional(jwtMgr, userRepo)
 	i18nMW := middleware.I18N(i18nStore)
@@ -58,6 +62,7 @@ func main() {
 		JWTOptionalMiddleware: jwtOptionalMW,
 		AuthController:        authCtrl,
 		LocaleController:      localeCtrl,
+		PhraseController:      phraseCtrl,
 	})
 
 	addr := fmt.Sprintf(":%d", cfg.App.Port)
