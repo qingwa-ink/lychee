@@ -1,5 +1,7 @@
 # 荔枝小秘书（Lychee Assistant）
 
+[English](./README.en.md) | 简体中文
+
 > 一款用于辅助 AI 编程的工具网站，项目名称：`lychee`。
 
 ## 项目简介
