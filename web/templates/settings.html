@@ -5,8 +5,8 @@
 
   <h3>{{index .I18n "settings.language"}}</h3>
   <p>
-    <button type="button" onclick="return switchLocale('zh')">中文</button>
-    <button type="button" onclick="return switchLocale('en')">English</button>
+    <button type="button" onclick="switchLocale('zh'); return false;">中文</button>
+    <button type="button" onclick="switchLocale('en'); return false;">English</button>
   </p>
 
   <h3>{{index .I18n "settings.change_password"}}</h3>

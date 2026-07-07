@@ -16,21 +16,24 @@ import (
 
 // Renderer 持有解析好的模板与 Jet 引擎。
 type Renderer struct {
-	templates *template.Template
-	jetSet    *jet.Set
-	i18n      *i18n.Store
+	templates     *template.Template
+	jetSet        *jet.Set
+	i18n          *i18n.Store
+	assetsVersion string // 静态资源版本号，拼到 /static/* 的查询串上做缓存击穿
 }
 
 // New 解析 templatesDir 下的 *.html，并初始化 jetDir 的 Jet 引擎。
-func New(templatesDir, jetDir string, store *i18n.Store) (*Renderer, error) {
+// assetsVersion 用于静态资源 URL 缓存击穿（每次发版/重启变化即可）。
+func New(templatesDir, jetDir string, store *i18n.Store, assetsVersion string) (*Renderer, error) {
 	tmpl, err := template.ParseGlob(filepath.Join(templatesDir, "*.html"))
 	if err != nil {
 		return nil, fmt.Errorf("parse templates: %w", err)
 	}
 	return &Renderer{
-		templates: tmpl,
-		jetSet:    jet.NewHTMLSet(jetDir),
-		i18n:      store,
+		templates:     tmpl,
+		jetSet:        jet.NewHTMLSet(jetDir),
+		i18n:          store,
+		assetsVersion: assetsVersion,
 	}, nil
 }
 
@@ -48,6 +51,9 @@ type PageData struct {
 	// 预序列化 JSON，注入到布局供前端 JS 复用（locale cookie 为 HttpOnly，JS 读不到）
 	LocaleJSON template.JS
 	I18NJSON   template.JS
+
+	// AssetsVersion 静态资源版本号，layout 中拼到 /static/* 的 ?v= 上做缓存击穿。
+	AssetsVersion string
 }
 
 // Render 渲染整页到 w。contentTmpl 为内容模板名（如 page_login），先单独渲染成 HTML，
@@ -55,6 +61,7 @@ type PageData struct {
 func (r *Renderer) Render(w io.Writer, locale, contentTmpl string, data *PageData) error {
 	data.Locale = locale
 	data.I18n = r.i18n.Messages(locale)
+	data.AssetsVersion = r.assetsVersion
 	if b, err := json.Marshal(locale); err == nil {
 		data.LocaleJSON = template.JS(b)
 	}

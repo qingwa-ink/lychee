@@ -81,7 +81,10 @@ func main() {
 	rateLimitMW := middleware.RateLimit(cfg.RateLimit.PerSecond)
 
 	// 前端：双引擎渲染（html/template 骨架 + Jet 片段）+ 页面控制器
-	renderer, err := render.New("web/templates", "web/jet", i18nStore)
+	// 静态资源版本号：每次启动变化，拼到 /static/* 的 ?v= 上，强制浏览器拉取最新 JS/CSS，
+	// 避免改了 core.js/app.css 后浏览器仍用启发式缓存的旧版本（导致登出/语种切换等无响应）。
+	assetsVersion := time.Now().Format("20060102.150405")
+	renderer, err := render.New("web/templates", "web/jet", i18nStore, assetsVersion)
 	if err != nil {
 		log.Fatalf("init renderer: %v", err)
 	}

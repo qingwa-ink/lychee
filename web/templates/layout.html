@@ -5,8 +5,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{if .Title}}{{index .I18n .Title}}{{else}}{{index .I18n "app.name"}}{{end}} · {{index .I18n "app.name"}}</title>
-  <link rel="stylesheet" href="/static/vendor/pico.min.css">
-  <link rel="stylesheet" href="/static/css/app.css">
+  <link rel="stylesheet" href="/static/vendor/pico.min.css?v={{.AssetsVersion}}">
+  <link rel="stylesheet" href="/static/css/app.css?v={{.AssetsVersion}}">
 </head>
 <body>
   {{if .ShowNav}}{{template "nav" .}}{{end}}
@@ -15,9 +15,9 @@
   </main>
   <!-- locale cookie 为 HttpOnly，JS 读不到；这里把语种与文案注入供前端复用 -->
   <script>window.__LOCALE__ = {{.LocaleJSON}}; window.__I18N__ = {{.I18NJSON}}; window.__PAGE__ = "{{.Page}}";</script>
-  <script src="/static/js/core.js" defer></script>
-  <script src="/static/js/auth.js" defer></script>
-  {{range .Scripts}}<script src="{{.}}" defer></script>{{end}}
+  <script src="/static/js/core.js?v={{.AssetsVersion}}" defer></script>
+  <script src="/static/js/auth.js?v={{.AssetsVersion}}" defer></script>
+  {{range .Scripts}}<script src="{{.}}?v={{$.AssetsVersion}}" defer></script>{{end}}
 </body>
 </html>
 {{end}}
@@ -36,10 +36,10 @@
   </ul>
   <ul>
     <li class="locale-switch">
-      <a href="#" onclick="return switchLocale('zh')">中</a> /
-      <a href="#" onclick="return switchLocale('en')">EN</a>
+      <a href="#" onclick="switchLocale('zh'); return false;">中</a> /
+      <a href="#" onclick="switchLocale('en'); return false;">EN</a>
     </li>
-    <li><a href="#" id="nav-logout" onclick="return logout()">{{index .I18n "auth.logout"}}</a></li>
+    <li><a href="#" id="nav-logout" onclick="logout(); return false;">{{index .I18n "auth.logout"}}</a></li>
   </ul>
 </nav>
 {{end}}
