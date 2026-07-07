@@ -58,6 +58,16 @@ body { min-height: 100vh; }
 .app-nav a.active { font-weight: 700; text-decoration: underline; }
 .locale-switch { font-size: .9rem; }
 
+/* 公开认证页右上角语种切换 */
+.locale-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 1.25rem;
+  font-size: .9rem;
+  z-index: 100;
+}
+.locale-toggle a { color: var(--pico-primary, #0070f3); }
+
 /* 通用辅助类 */
 .muted { color: var(--ly-muted); }
 .error { color: var(--ly-err); }

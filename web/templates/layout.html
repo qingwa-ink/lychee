@@ -9,7 +9,13 @@
   <link rel="stylesheet" href="/static/css/app.css?v={{.AssetsVersion}}">
 </head>
 <body>
-  {{if .ShowNav}}{{template "nav" .}}{{end}}
+  {{if .ShowNav}}{{template "nav" .}}{{else}}
+  <!-- 公开认证页（登录/注册/忘记密码）右上角语种切换 -->
+  <div class="locale-toggle">
+    <a href="#" onclick="switchLocale('zh'); return false;">中</a> /
+    <a href="#" onclick="switchLocale('en'); return false;">EN</a>
+  </div>
+  {{end}}
   <main class="container page-{{.Page}}">
     {{.Content}}
   </main>
