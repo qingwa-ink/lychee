@@ -49,8 +49,9 @@ func (b *rateBucket) allow(key string, now time.Time) bool {
 	return true
 }
 
-// RateLimit 每 IP 每路由每秒至多 perSecond 次，超限返回 429（业务码 4290）。
-// perSecond<=0 时不启用限流（放行全部）。
+// RateLimit 每 IP 每「方法+路由」每秒至多 perSecond 次，超限返回 429（业务码 4290）。
+// key 含 HTTP 方法：避免「写后立即读」（如 POST /phrases 紧跟 GET /phrases 刷新列表）
+// 被误判为同一路由的连续请求而限流。perSecond<=0 时不启用限流（放行全部）。
 func RateLimit(perSecond int) gin.HandlerFunc {
 	bucket := newRateBucket(perSecond)
 	return func(c *gin.Context) {
@@ -58,7 +59,7 @@ func RateLimit(perSecond int) gin.HandlerFunc {
 			c.Next()
 			return
 		}
-		key := c.ClientIP() + "|" + c.FullPath()
+		key := c.ClientIP() + "|" + c.Request.Method + "|" + c.FullPath()
 		if !bucket.allow(key, time.Now()) {
 			response.Fail(c, errors.ErrRateLimited) // HTTP 200 + code 4290
 			c.Abort()

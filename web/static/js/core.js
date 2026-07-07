@@ -117,4 +117,7 @@
     api, t, showMsg, setTokens, clearTokens, getToken,
     isLoggedIn, goLogin, switchLocale, logout, TOK,
   };
+  // 布局里的内联 onclick（登出、语种切换）调用的是全局裸函数，故额外暴露到 window。
+  window.logout = logout;
+  window.switchLocale = switchLocale;
 })();

@@ -145,7 +145,7 @@ var zhCatalog = map[string]string{
 	"task.status_done":    "已完成",
 
 	// 页面与通用 UI（F1 前端）
-	"app.tagline":           "你的任务与健康管理助手",
+	"app.tagline":           "您的第一个 AI 编程助手",
 	"common.loading":        "加载中…",
 	"common.error":          "出错了",
 	"common.retry":          "重试",
@@ -269,7 +269,7 @@ var enCatalog = map[string]string{
 	"task.status_done":    "Completed",
 
 	// Page & common UI (F1 frontend)
-	"app.tagline":           "Your tasks & wellness companion",
+	"app.tagline":           "Your first AI coding assistant",
 	"common.loading":        "Loading…",
 	"common.error":          "Error",
 	"common.retry":          "Retry",

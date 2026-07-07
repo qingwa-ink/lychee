@@ -16,12 +16,12 @@ body { min-height: 100vh; }
   padding: 2rem;
 }
 .auth-card hgroup { text-align: center; margin-bottom: 1.5rem; }
-.auth-card hgroup p { color: var(--ly-muted); }
+.auth-card hgroup p { color: var(--ly-muted); margin-top: 15px; }
 .auth-links {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  gap: .75rem;
+  gap: 1.5rem;
   justify-content: center;
   padding-left: 0;
   margin-top: 1rem;
