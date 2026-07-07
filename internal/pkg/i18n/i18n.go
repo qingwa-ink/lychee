@@ -201,7 +201,7 @@ var zhCatalog = map[string]string{
 	"task.content":             "内容",
 	"task.insert_phrase":       "插入常用语…",
 	"task.no_group":            "请先选择或新建分组",
-	"task.copy_done":           "已复制到剪贴板",
+	"task.copy_done":           "复制成功",
 	"task.confirm_delete_group": "删除分组将级联删除其下所有子分组与任务，确认？",
 	"task.confirm_delete_task": "确认删除该任务？",
 
@@ -325,7 +325,7 @@ var enCatalog = map[string]string{
 	"task.content":             "Content",
 	"task.insert_phrase":       "Insert phrase…",
 	"task.no_group":            "Select or create a group first",
-	"task.copy_done":           "Copied to clipboard",
+	"task.copy_done":           "Copied",
 	"task.confirm_delete_group": "Deleting a group cascades to all subgroups and tasks. Confirm?",
 	"task.confirm_delete_task": "Delete this task?",
 

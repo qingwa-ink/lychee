@@ -98,6 +98,23 @@
     el.classList.toggle('ok', !isErr);
   }
 
+  // 轻量 toast：屏幕底部居中浮层，ms 毫秒后自动消失（默认 2s）。连续触发会重置计时并覆盖文案。
+  let toastTimer = null;
+  function toast(message, ms) {
+    ms = ms || 2000;
+    let el = document.getElementById('ly-toast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'ly-toast';
+      el.className = 'ly-toast';
+      document.body.appendChild(el);
+    }
+    el.textContent = message;
+    el.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), ms);
+  }
+
   async function switchLocale(loc) {
     try {
       await api('/locale', { method: 'PUT', body: { locale: loc }, auth: isLoggedIn() });
@@ -114,10 +131,11 @@
   }
 
   window.Ly = {
-    api, t, showMsg, setTokens, clearTokens, getToken,
+    api, t, showMsg, toast, setTokens, clearTokens, getToken,
     isLoggedIn, goLogin, switchLocale, logout, TOK,
   };
   // 布局里的内联 onclick（登出、语种切换）调用的是全局裸函数，故额外暴露到 window。
   window.logout = logout;
   window.switchLocale = switchLocale;
+  window.toast = toast;
 })();

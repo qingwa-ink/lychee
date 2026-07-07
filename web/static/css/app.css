@@ -35,6 +35,24 @@ body { min-height: 100vh; }
 .auth-msg.error { color: var(--ly-err); }
 .auth-msg[hidden] { display: none; }
 
+/* 轻量 toast（复制等短暂提示） */
+.ly-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 2rem;
+  transform: translateX(-50%) translateY(.75rem);
+  background: #333;
+  color: #fff;
+  padding: .55rem 1.1rem;
+  border-radius: .35rem;
+  font-size: .9rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+  z-index: 9999;
+}
+.ly-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
 /* 顶部导航 */
 .app-nav { padding: .5rem 1rem; }
 .app-nav a.active { font-weight: 700; text-decoration: underline; }

@@ -254,10 +254,11 @@
   document.getElementById('task-copy').addEventListener('click', () => copyText(fContent.value));
 
   function copyText(text) {
+    const ok = () => window.Ly.toast(t('task.copy_done'), 2000);
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(() => showMsg(t('task.copy_done')), () => {});
+      navigator.clipboard.writeText(text).then(ok, () => {});
     } else {
-      showMsg(t('task.copy_done'));
+      ok();
     }
   }
 
