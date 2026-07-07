@@ -156,7 +156,37 @@ button.danger, .danger { color: var(--ly-err); }
   align-items: center;
   margin: .5rem 0;
 }
-.ly-filters select, .ly-filters button { margin: 0; }
+/* 工具栏 / 筛选行内的下拉、输入、按钮统一为小尺寸，与 .small 按钮一致；
+   width:auto 让 select 不再被 Pico 撑成 100%——任务页四个筛选框即可同行排开；
+   height 显式设定，避免日期/数字 input 被 Pico 的默认高度撑高。 */
+.ly-filters > select,
+.ly-filters > input,
+.ly-filters > button,
+.ly-panel-head > select,
+.ly-panel-head > input,
+.ly-panel-head > button {
+  width: auto;
+  height: 1.6rem;
+  font-size: .8rem;
+  padding: .15rem .5rem;
+  margin: 0;
+}
+/* 任务页四个筛选下拉：限宽并强制同行，避免各自占满一行 */
+#task-panel > .ly-filters { flex-wrap: nowrap; }
+#task-panel > .ly-filters > select { max-width: 7.5rem; }
+
+/* 设置页按钮（语种切换 / 发送验证码 / 保存）与常用语「新建」按钮：
+   统一为小尺寸、内容宽度，与各页 .small 按钮一致，不再被 Pico 撑高/占满整行。 */
+#settings-root button,
+#phrase-submit {
+  width: auto;
+  height: 1.6rem;
+  font-size: .8rem;
+  padding: .15rem .5rem;
+  margin: 0;
+}
+/* 发送验证码按钮在 .grid 内默认拉伸占满网格列，靠左内容宽度 */
+#pw-send-code { justify-self: start; }
 
 #task-list { display: flex; flex-direction: column; gap: .5rem; }
 .task-card {
@@ -206,6 +236,20 @@ button.danger, .danger { color: var(--ly-err); }
 }
 @media (max-width: 768px) { .ly-ci-grid { grid-template-columns: 1fr; } }
 .ci-date { max-width: 12rem; }
+
+/* 打卡「记一笔」表单：压成紧凑单行，控件与 .small 等高 */
+#ci-record-form { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-bottom: .75rem; }
+#ci-record-form > label { margin: 0; display: inline-flex; align-items: center; gap: .35rem; }
+#ci-record-form > label > select,
+#ci-record-form > label > input,
+#ci-record-form > button {
+  width: auto;
+  height: 1.6rem;
+  font-size: .8rem;
+  padding: .15rem .5rem;
+  margin: 0;
+}
+#ci-record-form #ci-value { width: 5rem; }
 
 .ci-report-item {
   border: 1px solid var(--pico-muted-border-color, #eee);
