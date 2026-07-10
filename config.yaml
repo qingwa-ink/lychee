@@ -6,7 +6,7 @@ app:
 # ========== JWT 认证 ==========
 jwt:
   secret: "change-me-in-production"
-  access_ttl: "60m"      # Access Token 有效期
+  access_ttl: "180m"      # Access Token 有效期
   refresh_ttl: "168h"    # Refresh Token 有效期（7 天）
 
 # ========== 接口限流 ==========

@@ -41,7 +41,7 @@
       renderRecords(records);
       renderGoals(goals);
     } catch (e) {
-      window.Ly.showMsg(msg, e.message || t('common.error'), true);
+      window.Ly.toast(e.message || t('common.error'), 2000, true);
     }
   }
 
@@ -104,12 +104,12 @@
         '<button type="button" class="small">' + t('checkin.set_target') + '</button>';
       row.querySelector('button').addEventListener('click', async () => {
         const v = parseFloat(row.querySelector('input').value);
-        if (!(v > 0)) { window.Ly.showMsg(msg, t('checkin.value'), true); return; }
+        if (!(v > 0)) { window.Ly.toast(t('checkin.value'), 2000, true); return; }
         try {
           await window.Ly.api('/check-in/goals', { method: 'PUT', body: { type: ty, daily_target: v, unit } });
-          window.Ly.showMsg(msg, t('checkin.set_target') + ' ✓');
+          window.Ly.toast(t('checkin.set_target') + ' ✓', 2000);
           await loadAll(dateEl.value);
-        } catch (e) { window.Ly.showMsg(msg, e.message || t('common.error'), true); }
+        } catch (e) { window.Ly.toast(e.message || t('common.error'), 2000, true); }
       });
       goalsEl.appendChild(row);
     }
@@ -119,7 +119,7 @@
     e.preventDefault();
     const type = document.getElementById('ci-type').value;
     const value = parseFloat(document.getElementById('ci-value').value);
-    if (!(value > 0)) { window.Ly.showMsg(msg, t('checkin.value'), true); return; }
+    if (!(value > 0)) { window.Ly.toast(t('checkin.value'), 2000, true); return; }
     const btn = document.getElementById('ci-submit');
     btn.disabled = true;
     try {
@@ -127,10 +127,10 @@
         method: 'POST', body: { type, value, record_date: dateEl.value },
       });
       document.getElementById('ci-value').value = '';
-      window.Ly.showMsg(msg, t('checkin.recorded') + ' ✓');
+      window.Ly.toast(t('checkin.recorded') + ' ✓', 2000);
       await loadAll(dateEl.value);
     } catch (err) {
-      window.Ly.showMsg(msg, err.message || t('common.error'), true);
+      window.Ly.toast(err.message || t('common.error'), 2000, true);
     } finally {
       btn.disabled = false;
     }
