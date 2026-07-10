@@ -49,12 +49,22 @@
       tr.innerHTML =
         '<td class="phrase-cell">' + esc(item.content) + '</td>' +
         '<td class="muted small">' + esc((item.updated_at || '').replace('T', ' ').slice(0, 16)) + '</td>' +
-        '<td><button class="edit-btn">编辑</button> <button class="del-btn">删除</button></td>';
+        '<td><button class="copy-btn">复制</button> <button class="edit-btn">编辑</button> <button class="del-btn danger">删除</button></td>';
+      tr.querySelector('.copy-btn').addEventListener('click', () => copyToClipboard(item.content));
       tr.querySelector('.edit-btn').addEventListener('click', () => openEdit(item));
       tr.querySelector('.del-btn').addEventListener('click', () => del(item));
       listEl.appendChild(tr);
     }
     renderPager(total);
+  }
+
+  async function copyToClipboard(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      window.Ly.toast(window.Ly.t('common.copied') || '复制成功');
+    } catch (err) {
+      window.Ly.toast(window.Ly.t('common.copy_failed') || '复制失败', true);
+    }
   }
 
   function renderPager(total) {
@@ -76,10 +86,10 @@
     try {
       await window.Ly.api('/phrases', { method: 'POST', body: { content } });
       input.value = '';
-      window.Ly.showMsg(msg, window.Ly.t('phrases.saved'));
+      window.Ly.toast(window.Ly.t('common.saved') || '已保存');
       await load(1);
     } catch (err) {
-      window.Ly.showMsg(msg, err.message || window.Ly.t('common.error'), true);
+      window.Ly.toast(err.message || window.Ly.t('common.error'), true);
     } finally {
       submitBtn.disabled = false;
     }
@@ -92,7 +102,7 @@
   }
   editCancel.addEventListener('click', () => { dlg.close(); editingId = null; });
   document.getElementById('phrase-edit-form').addEventListener('submit', async (e) => {
-    // dialog 表单 submit 即“保存”
+    // dialog 表单 submit 即"保存"
     if (!editingId) return;
     e.preventDefault();
     const content = editInput.value.trim();
@@ -101,11 +111,11 @@
       await window.Ly.api('/phrases/' + editingId, { method: 'PUT', body: { content } });
       dlg.close();
       editingId = null;
-      window.Ly.showMsg(msg, window.Ly.t('phrases.saved'));
+      window.Ly.toast(window.Ly.t('common.saved') || '已保存');
       await load(page);
     } catch (err) {
       dlg.close();
-      window.Ly.showMsg(msg, err.message || window.Ly.t('common.error'), true);
+      window.Ly.toast(err.message || window.Ly.t('common.error'), true);
     }
   });
 
@@ -113,10 +123,10 @@
     if (!confirm(window.Ly.t('common.confirm_delete'))) return;
     try {
       await window.Ly.api('/phrases/' + item.id, { method: 'DELETE' });
-      window.Ly.showMsg(msg, window.Ly.t('phrases.deleted'));
+      window.Ly.toast(window.Ly.t('common.deleted') || '删除成功');
       await load(page);
     } catch (err) {
-      window.Ly.showMsg(msg, err.message || window.Ly.t('common.error'), true);
+      window.Ly.toast(err.message || window.Ly.t('common.error'), true);
     }
   }
 

@@ -7,6 +7,55 @@
   --ly-bar-bg: #e9ecef;
 }
 
+/* 防止 Bootstrap 覆盖 Pico.css 的深色主题样式 */
+@media only screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    background-color: var(--pico-background-color) !important;
+    color: var(--pico-color) !important;
+  }
+  
+  body {
+    background-color: var(--pico-background-color) !important;
+    color: var(--pico-color) !important;
+  }
+  
+  input:not([type=checkbox],[type=radio],[type=range],[type=file]),
+  select,
+  textarea {
+    background-color: var(--pico-form-element-background-color) !important;
+    color: var(--pico-form-element-color) !important;
+    border-color: var(--pico-form-element-border-color) !important;
+  }
+  
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--pico-form-element-placeholder-color) !important;
+  }
+}
+
+[data-theme=dark] {
+  background-color: var(--pico-background-color) !important;
+  color: var(--pico-color) !important;
+}
+
+[data-theme=dark] body {
+  background-color: var(--pico-background-color) !important;
+  color: var(--pico-color) !important;
+}
+
+[data-theme=dark] input:not([type=checkbox],[type=radio],[type=range],[type=file]),
+[data-theme=dark] select,
+[data-theme=dark] textarea {
+  background-color: var(--pico-form-element-background-color) !important;
+  color: var(--pico-form-element-color) !important;
+  border-color: var(--pico-form-element-border-color) !important;
+}
+
+[data-theme=dark] input::placeholder,
+[data-theme=dark] textarea::placeholder {
+  color: var(--pico-form-element-placeholder-color) !important;
+}
+
 body { min-height: 100vh; }
 
 /* 认证卡片居中 */
@@ -35,7 +84,39 @@ body { min-height: 100vh; }
 .auth-msg.error { color: var(--ly-err); }
 .auth-msg[hidden] { display: none; }
 
-/* 轻量 toast（复制等短暂提示） */
+/* Bootstrap Toast 醒目样式 */
+.toast {
+  min-width: 300px;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.toast-body {
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 1rem 1.5rem;
+}
+
+.toast-success {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: #fff;
+}
+
+.toast-success .toast-body {
+  color: #fff;
+}
+
+.toast-error {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: #fff;
+}
+
+.toast-error .toast-body {
+  color: #fff;
+}
+
+/* 旧版toast样式（降级方案） */
 .ly-toast {
   position: fixed;
   left: 50%;
@@ -109,6 +190,8 @@ td.phrase-cell { word-break: break-word; max-width: 30rem; white-space: pre-wrap
 .phrase-pager span { color: var(--ly-muted); font-size: .9rem; }
 #phrase-edit-dlg { max-width: 40rem; width: 90%; }
 #phrase-edit-dlg textarea { width: 100%; }
+#task-edit-dlg { max-width: 75rem; width: 90%; }
+#task-edit-dlg textarea { width: 100%; min-height: 150px; }
 
 /* 任务看板（F1.3） */
 #group-panel {
@@ -128,7 +211,8 @@ td.phrase-cell { word-break: break-word; max-width: 30rem; white-space: pre-wrap
 }
 .ly-panel-head .spacer, .task-spacer { flex: 1; }
 button.small, .small { font-size: .8rem; padding: .15rem .5rem; }
-button.danger, .danger { color: var(--ly-err); }
+button.danger, .danger { background: var(--ly-err); color: #fff; border-color: var(--ly-err); }
+button.danger:hover { background: #b31b27; border-color: #b31b27; }
 
 .group-tree, .group-tree ul {
   list-style: none;
@@ -274,7 +358,17 @@ button.danger, .danger { color: var(--ly-err); }
   margin-bottom: .5rem;
 }
 .ci-goal-label { width: 9rem; font-size: .9rem; }
-.ci-goal-input { max-width: 8rem; margin: 0; }
+.ci-goal-input {
+  max-width: 8rem;
+  margin: 0;
+  height: 1.6rem;
+  font-size: .8rem;
+  padding: .15rem .5rem;
+}
+.ci-goal-row button.small {
+  min-width: 100px;
+  padding: .15rem .8rem;
+}
 
 /* 操作日志与图表（F1.5） */
 .ly-chart-panel {
