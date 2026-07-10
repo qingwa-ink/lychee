@@ -1,0 +1,25 @@
+# 测试环境配置 — 部署到 EC2 lychee.uvera.ai
+# 由 docker-compose volume 挂载到 /app/config/config.yaml
+app:
+  port: 8090
+  env: dev
+
+jwt:
+  secret: "lychee-test-jwt-secret-change-me"
+  access_ttl: "180m"
+  refresh_ttl: "168h"
+
+rate_limit:
+  per_second: 20
+
+mail:
+  host: "smtp.qq.com"
+  port: 465
+  user: "your-email@qq.com"
+  pass: "your-smtp-password"
+
+i18n:
+  default: "zh"
+
+db:
+  path: "/app/data/lychee.db"

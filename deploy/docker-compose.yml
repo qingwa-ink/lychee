@@ -1,0 +1,19 @@
+# lychee 测试环境部署（lychee.uvera.ai）
+#   部署：docker compose -f deploy/docker-compose.yml up -d --build
+services:
+  lychee:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: lychee:latest
+    container_name: lychee-test
+    restart: unless-stopped
+    volumes:
+      - ./config:/app/config:ro
+      - ./data:/app/data
+    networks:
+      - uvera-test
+
+networks:
+  uvera-test:
+    external: true
