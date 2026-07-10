@@ -148,6 +148,7 @@ var zhCatalog = map[string]string{
 	"app.tagline":           "您的第一个 AI 编程助手",
 	"common.loading":        "加载中…",
 	"common.error":          "出错了",
+	"common.network_error":   "网络错误",
 	"common.retry":          "重试",
 	"common.optional":       "可选",
 	"common.operation":      "操作",
@@ -185,6 +186,10 @@ var zhCatalog = map[string]string{
 	"common.prev":              "上一页",
 	"common.next":              "下一页",
 	"common.confirm_delete":    "确认删除？",
+	"common.copied":            "复制成功",
+	"common.copy_failed":       "复制失败",
+	"common.saved":             "已保存",
+	"common.deleted":           "已删除",
 
 	// 任务页（F1.3）
 	"task.add_group":           "新建分组",
@@ -272,6 +277,7 @@ var enCatalog = map[string]string{
 	"app.tagline":           "Your first AI coding assistant",
 	"common.loading":        "Loading…",
 	"common.error":          "Error",
+	"common.network_error":   "Network error",
 	"common.retry":          "Retry",
 	"common.optional":       "optional",
 	"common.operation":      "Actions",
@@ -309,6 +315,10 @@ var enCatalog = map[string]string{
 	"common.prev":              "Prev",
 	"common.next":              "Next",
 	"common.confirm_delete":    "Confirm delete?",
+	"common.copied":            "Copied",
+	"common.copy_failed":       "Copy failed",
+	"common.saved":             "Saved",
+	"common.deleted":           "Deleted",
 
 	// Tasks page (F1.3)
 	"task.add_group":           "New Group",

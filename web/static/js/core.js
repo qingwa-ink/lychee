@@ -65,7 +65,7 @@
     const method = opts.method || 'GET';
     const withAuth = opts.auth !== false;
     let { json } = await rawFetch(path, method, opts.body, withAuth);
-    if (!json) throw err(0, 'Network error');
+    if (!json) throw err(0, t('common.network_error'));
 
     // token 过期（4011）：静默刷新后重试一次
     if (withAuth && json.code === 4011) {
@@ -73,7 +73,7 @@
         await refreshTokens();
         const retry = await rawFetch(path, method, opts.body, true);
         json = retry.json;
-        if (!json) throw err(0, 'Network error');
+        if (!json) throw err(0, t('common.network_error'));
       } catch (e) {
         throw err(4011, t('auth.session_expired'));
       }
@@ -98,21 +98,41 @@
     el.classList.toggle('ok', !isErr);
   }
 
-  // 轻量 toast：屏幕底部居中浮层，ms 毫秒后自动消失（默认 2s）。连续触发会重置计时并覆盖文案。
+  // Bootstrap toast: 支持 success/error 类型，醒目样式
   let toastTimer = null;
-  function toast(message, ms) {
+  function toast(message, ms, isErr) {
     ms = ms || 2000;
     let el = document.getElementById('ly-toast');
     if (!el) {
+      // 如果没有在 layout 中定义，创建一个备用 toast
       el = document.createElement('div');
       el.id = 'ly-toast';
-      el.className = 'ly-toast';
+      el.className = 'toast';
+      el.setAttribute('role', 'alert');
+      el.innerHTML = '<div class="toast-body"></div>';
       document.body.appendChild(el);
     }
-    el.textContent = message;
-    el.classList.add('show');
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.remove('show'), ms);
+    const body = el.querySelector('.toast-body') || el;
+    body.textContent = message;
+
+    // 根据类型设置样式
+    el.classList.remove('toast-success', 'toast-error');
+    if (isErr) {
+      el.classList.add('toast-error');
+    } else {
+      el.classList.add('toast-success');
+    }
+
+    // 使用 Bootstrap Toast API
+    if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
+      const bsToast = new bootstrap.Toast(el, { delay: ms, animation: true });
+      bsToast.show();
+    } else {
+      // 降级方案：手动显示/隐藏
+      el.classList.add('show');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), ms);
+    }
   }
 
   async function switchLocale(loc) {

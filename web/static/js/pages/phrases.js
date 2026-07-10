@@ -49,7 +49,7 @@
       tr.innerHTML =
         '<td class="phrase-cell">' + esc(item.content) + '</td>' +
         '<td class="muted small">' + esc((item.updated_at || '').replace('T', ' ').slice(0, 16)) + '</td>' +
-        '<td><button class="copy-btn">复制</button> <button class="edit-btn">编辑</button> <button class="del-btn danger">删除</button></td>';
+        '<td><button class="copy-btn">' + window.Ly.t('common.copy') + '</button> <button class="edit-btn">' + window.Ly.t('common.edit') + '</button> <button class="del-btn danger">' + window.Ly.t('common.delete') + '</button></td>';
       tr.querySelector('.copy-btn').addEventListener('click', () => copyToClipboard(item.content));
       tr.querySelector('.edit-btn').addEventListener('click', () => openEdit(item));
       tr.querySelector('.del-btn').addEventListener('click', () => del(item));
@@ -61,9 +61,9 @@
   async function copyToClipboard(text) {
     try {
       await navigator.clipboard.writeText(text);
-      window.Ly.toast(window.Ly.t('common.copied') || '复制成功');
+      window.Ly.toast(window.Ly.t('common.copied'));
     } catch (err) {
-      window.Ly.toast(window.Ly.t('common.copy_failed') || '复制失败', true);
+      window.Ly.toast(window.Ly.t('common.copy_failed'), true);
     }
   }
 
@@ -86,7 +86,7 @@
     try {
       await window.Ly.api('/phrases', { method: 'POST', body: { content } });
       input.value = '';
-      window.Ly.toast(window.Ly.t('common.saved') || '已保存');
+      window.Ly.toast(window.Ly.t('common.saved'));
       await load(1);
     } catch (err) {
       window.Ly.toast(err.message || window.Ly.t('common.error'), true);
@@ -111,7 +111,7 @@
       await window.Ly.api('/phrases/' + editingId, { method: 'PUT', body: { content } });
       dlg.close();
       editingId = null;
-      window.Ly.toast(window.Ly.t('common.saved') || '已保存');
+      window.Ly.toast(window.Ly.t('common.saved'));
       await load(page);
     } catch (err) {
       dlg.close();
@@ -123,7 +123,7 @@
     if (!confirm(window.Ly.t('common.confirm_delete'))) return;
     try {
       await window.Ly.api('/phrases/' + item.id, { method: 'DELETE' });
-      window.Ly.toast(window.Ly.t('common.deleted') || '删除成功');
+      window.Ly.toast(window.Ly.t('common.deleted'));
       await load(page);
     } catch (err) {
       window.Ly.toast(err.message || window.Ly.t('common.error'), true);
