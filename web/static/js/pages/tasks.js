@@ -42,7 +42,7 @@
     root.innerHTML = '';
     // 虚拟“全部任务”节点
     const allLi = document.createElement('li');
-    allLi.innerHTML = '<a href="#" class="group-item' + (selectedGroupId == null ? ' active' : '') + '" data-id="">🗂 ' + esc(t('task.all')) + '</a>';
+    allLi.innerHTML = '<a href="#" class="group-item' + (selectedGroupId == null ? ' active' : '') + '" data-id="">🗂️ ' + esc(t('task.all')) + '</a>';
     allLi.querySelector('a').addEventListener('click', (e) => { e.preventDefault(); selectGroup(null, t('task.all')); });
     root.appendChild(allLi);
     for (const node of tree) root.appendChild(renderNode(node, 0));
