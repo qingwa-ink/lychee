@@ -55,7 +55,7 @@
     a.className = 'group-item' + (selectedGroupId === node.id ? ' active' : '');
     a.style.paddingLeft = (0.6 + depth * 1) + 'rem';
     a.dataset.id = node.id;
-    a.textContent = '📁 ' + node.name;
+    a.textContent = '🎒 ' + node.name;
     a.addEventListener('click', (e) => { e.preventDefault(); selectGroup(node.id, node.name); });
     li.appendChild(a);
     if (node.children && node.children.length) {
