@@ -208,7 +208,9 @@ var zhCatalog = map[string]string{
 	"task.no_group":            "请先选择或新建分组",
 	"task.copy_done":           "复制成功",
 	"task.confirm_delete_group": "删除分组将级联删除其下所有子分组与任务，确认？",
-	"task.confirm_delete_task": "确认删除该任务？",
+	"task.confirm_delete_task":  "确认删除该任务？",
+	"task.expand":               "展开",
+	"task.collapse":             "收起",
 
 	// 打卡与健康（F1.4）
 	"checkin.record":      "记一笔",
@@ -338,6 +340,8 @@ var enCatalog = map[string]string{
 	"task.copy_done":           "Copied",
 	"task.confirm_delete_group": "Deleting a group cascades to all subgroups and tasks. Confirm?",
 	"task.confirm_delete_task": "Delete this task?",
+	"task.expand":               "Expand",
+	"task.collapse":             "Collapse",
 
 	// Check-in & wellness (F1.4)
 	"checkin.record":      "Add Record",

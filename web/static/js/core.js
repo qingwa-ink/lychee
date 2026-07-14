@@ -46,16 +46,48 @@
     return { status: res.status, json };
   }
 
-  // 用 refresh token 换新双 token；失败清空并跳登录
-  async function refreshTokens() {
+  // ---- token 刷新互斥锁 ----
+  // 解决并发请求同时触发多次 refresh 导致 token 被覆盖、误退出的问题
+  let refreshPromise = null;
+
+  // 用 refresh token 换新双 token；失败仅在 refresh token 确实无效时才跳登录
+  // 使用互斥锁：多个并发请求共享同一次 refresh 操作
+  function refreshTokens() {
+    // 如果已有正在进行的刷新，复用它
+    if (refreshPromise) return refreshPromise;
+
+    refreshPromise = doRefresh().finally(() => {
+      refreshPromise = null;
+    });
+
+    return refreshPromise;
+  }
+
+  async function doRefresh() {
     const rt = getToken(TOK.refresh);
     if (!rt) { goLogin(); throw err(0, 'no refresh token'); }
-    const { json } = await rawFetch('/auth/refresh', 'POST', { refresh_token: rt }, false);
+
+    let resp;
+    try {
+      resp = await rawFetch('/auth/refresh', 'POST', { refresh_token: rt }, false);
+    } catch (e) {
+      // 网络错误不跳登录，让上层决定
+      throw err(0, t('common.network_error'));
+    }
+
+    const json = resp.json;
     if (json && json.code === 0 && json.data) {
       setTokens(json.data.access_token, json.data.refresh_token);
       return true;
     }
-    goLogin();
+
+    // 仅在 refresh token 确实无效（4010/4011）时才清空并跳登录
+    if (json && (json.code === 4010 || json.code === 4011)) {
+      goLogin();
+      throw err(json.code, json.message || 'refresh token invalid');
+    }
+
+    // 其他错误（限流、服务器错误等）不跳登录
     throw err(json ? json.code : 0, json ? json.message : 'refresh failed');
   }
 
@@ -67,7 +99,7 @@
     let { json } = await rawFetch(path, method, opts.body, withAuth);
     if (!json) throw err(0, t('common.network_error'));
 
-    // token 过期（4011）：静默刷新后重试一次
+    // token 过期（4011）：通过互斥锁静默刷新后重试一次
     if (withAuth && json.code === 4011) {
       try {
         await refreshTokens();
@@ -75,7 +107,12 @@
         json = retry.json;
         if (!json) throw err(0, t('common.network_error'));
       } catch (e) {
-        throw err(4011, t('auth.session_expired'));
+        // 如果刷新本身被拒绝（如 refresh token 也过期），goLogin 已在 doRefresh 内执行
+        // 网络错误等非鉴权异常不跳登录，直接抛出
+        if (e && (e.code === 4010 || e.code === 4011)) {
+          throw err(4011, t('auth.session_expired'));
+        }
+        throw e;
       }
     }
 

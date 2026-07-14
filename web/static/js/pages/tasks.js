@@ -177,10 +177,26 @@
           '<button class="edit-task small">' + t('common.edit') + '</button>' +
           '<button class="del-task small danger">' + t('common.delete') + '</button>' +
         '</div>' +
-        '<div class="task-content">' + esc(task.content) + '</div>';
+        '<div class="task-content collapsed">' + esc(task.content) + '</div>' +
+        '<button class="task-toggle" hidden>' + t('task.expand') + '</button>';
       card.querySelector('.copy-task').addEventListener('click', () => copyText(task.content));
       card.querySelector('.edit-task').addEventListener('click', () => openEdit(task));
       card.querySelector('.del-task').addEventListener('click', () => delTask(task));
+
+      // 展开/收起逻辑
+      const contentEl = card.querySelector('.task-content');
+      const toggleBtn = card.querySelector('.task-toggle');
+      // 渲染后检查是否超出了3行（通过 scrollHeight > clientHeight 判断）
+      requestAnimationFrame(() => {
+        if (contentEl.scrollHeight > contentEl.clientHeight + 2) {
+          toggleBtn.hidden = false;
+        }
+      });
+      toggleBtn.addEventListener('click', () => {
+        const collapsed = contentEl.classList.toggle('collapsed');
+        toggleBtn.textContent = collapsed ? t('task.expand') : t('task.collapse');
+      });
+
       listEl.appendChild(card);
     }
     renderPager(total);

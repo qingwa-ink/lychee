@@ -6,13 +6,13 @@ KEY=~/Downloads/uvera.pem
 HOST=ubuntu@ec2-100-55-69-192.compute-1.amazonaws.com
 
 echo "=== 1. 创建源代码 tarball ==="
-tar --exclude='.git' --exclude='bin' --exclude='data' --exclude='.DS_Store' --exclude='*.png' -czf /tmp/lychee-src.tar.gz .
+tar --exclude='.git' --exclude='bin' --exclude='.DS_Store' -czf /tmp/lychee-src.tar.gz .
 
 echo "=== 2. 上传文件到 EC2 ==="
-ssh -i "$KEY" "$HOST" "mkdir -p /home/ubuntu/lychee/deploy/config /home/ubuntu/lychee/data"
+mkdir -p /home/ubuntu/lychee/deploy/data
 scp -i "$KEY" /tmp/lychee-src.tar.gz "$HOST":/home/ubuntu/lychee/
 scp -i "$KEY" config_test.yaml "$HOST":/home/ubuntu/lychee/deploy/config/config.yaml
-scp -i "$KEY" data/lychee.db "$HOST":/home/ubuntu/lychee/data/lychee.db
+scp -i "$KEY" data/lychee.db "$HOST":/home/ubuntu/lychee/deploy/data/lychee.db
 
 echo "=== 3. 在 EC2 上解压并构建 Docker 镜像 ==="
 ssh -i "$KEY" "$HOST" "
@@ -34,12 +34,11 @@ cd /home/ubuntu/lychee
 docker compose -f deploy/docker-compose.yml up -d
 "
 
-echo "=== 6. 导入 SQLite 数据 ==="
+echo "=== 6. 重启 lychee 加载数据 ==="
 ssh -i "$KEY" "$HOST" "
 cd /home/ubuntu/lychee
-docker compose -f deploy/docker-compose.yml stop lychee
-docker run --rm -v lychee_data:/app/data -v /home/ubuntu/lychee/data:/host_data alpine cp /host_data/lychee.db /app/data/lychee.db
-docker compose -f deploy/docker-compose.yml start lychee
+# 数据文件已通过 bind mount (./data:/app/data) 挂载，无需额外导入
+docker compose -f deploy/docker-compose.yml restart lychee
 "
 
 echo "=== 7. 等待服务启动 ==="

@@ -8,6 +8,8 @@ services:
     image: lychee:latest
     container_name: lychee-test
     restart: unless-stopped
+    ports:
+      - "127.0.0.1:8090:8090"
     volumes:
       - ./config:/app/config:ro
       - ./data:/app/data
