@@ -37,7 +37,7 @@
       const at = getToken(TOK.access);
       if (at) headers['Authorization'] = 'Bearer ' + at;
     }
-    const res = await fetch('/api/v1' + path, {
+    const res = await fetch('/web/v1' + path, {
       method, headers,
       body: body == null ? undefined : JSON.stringify(body),
     });

@@ -3,13 +3,13 @@ set -e
 # lychee 部署到测试环境 (lychee.uvera.ai)
 # 在 lychee 项目根目录运行此脚本
 KEY=~/Downloads/uvera.pem
-HOST=ubuntu@ec2-100-55-69-192.compute-1.amazonaws.com
+HOST=ubuntu@ec2-100-55-48-57.compute-1.amazonaws.com
 
 echo "=== 1. 创建源代码 tarball ==="
 tar --exclude='.git' --exclude='bin' --exclude='.DS_Store' -czf /tmp/lychee-src.tar.gz .
 
 echo "=== 2. 上传文件到 EC2 ==="
-mkdir -p /home/ubuntu/lychee/deploy/data
+ssh -i "$KEY" "$HOST" "mkdir -p /home/ubuntu/lychee/deploy/config /home/ubuntu/lychee/deploy/data"
 scp -i "$KEY" /tmp/lychee-src.tar.gz "$HOST":/home/ubuntu/lychee/
 scp -i "$KEY" config_test.yaml "$HOST":/home/ubuntu/lychee/deploy/config/config.yaml
 scp -i "$KEY" data/lychee.db "$HOST":/home/ubuntu/lychee/deploy/data/lychee.db
